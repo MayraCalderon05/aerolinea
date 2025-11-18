@@ -1,4 +1,4 @@
-package principal.TDA; 
+package principal.TDA;
 
 public class Avion {
     private String identificacion;
