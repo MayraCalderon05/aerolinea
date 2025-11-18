@@ -5,8 +5,8 @@ import java.io.FileReader;
 //import java.io.FileWriter;
 import java.io.IOException;
 
-public class lectura {
-    public static void main(String[] args) {
+public class Lectura {
+    public static void lecturaArchivos() {
         // ruta desde el disco
         String rutasEntrada = "C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\Rutas.txt";
         String avionesEntrada = "C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\Aviones.txt";
@@ -15,7 +15,7 @@ public class lectura {
         String[] rutas = leerArchivo(rutasEntrada);
         String[] aviones = leerArchivo(avionesEntrada);
         String[] vuelos = leerArchivo(vuelosEntrada);
-        
+
         imprimirLineas(rutas);
         imprimirLineas(aviones);
         imprimirLineas(vuelos);
