@@ -4,74 +4,123 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 //import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
+
+import principal.TDA.Avion;
+import principal.TDA.Ruta;
 
 public class Lectura {
     public static void main(String[] args) {
-        lecturaArchivos();
+        Ruta[] prueba = cargarRutas();
+        System.out.println(Arrays.toString(prueba));
     }
     public static void lecturaArchivos() {
         // ruta desde el disco
-        String rutasEntrada = "C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\Rutas.txt";
-        String avionesEntrada = "C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\Aviones.txt";
-        String vuelosEntrada = "C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\Vuelos.txt";
+        //String vuelosEntrada = "C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\Vuelos.txt";
         
-        leerArchivo(rutasEntrada);
-        leerArchivo(avionesEntrada);
-        leerArchivo(vuelosEntrada);
-        /* 
-        String[] rutas = leerArchivo(rutasEntrada);
-        String[] aviones = leerArchivo(avionesEntrada);
-        String[] vuelos = leerArchivo(vuelosEntrada);
-
-        imprimirLineas(rutas);
-        imprimirLineas(aviones);
-        imprimirLineas(vuelos);
-        */
+        
     }
 
-    public static void leerArchivo(String ruta){
-        //String[] lineas = new String[0];
-        //int contador = 0;
+    public static Avion[] cargarAvion(){
+        //ruta hacia el archivo txt
+        String avionesEntrada = "C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\Aviones.txt";
+        //creo un arreglo con 2 espacios mas en caso de guardar mas aviones
+        Avion[] aviones = new Avion[22];
         String linea = null;
+        //posicion de la linea
+        int posicion = 0;
+
+        //declaro las variables para guardar los datos leidos
+        String identificacion = "";
+        String modelo = "";
+        int cantVuelos = 0;
+        int cantAsientos = 0;
+        double kmRecorridos = 0.00;
 
         try {
-            FileReader lectorArchivo = new FileReader(ruta);
+            FileReader lectorArchivo = new FileReader(avionesEntrada);
             BufferedReader bufferLectura = new BufferedReader(lectorArchivo);
 
-            //? cuenta las lineas del archivo
             while ((linea = bufferLectura.readLine()) != null) {
-                System.out.println(linea);
-                //contador++;
+                //el limite es la cantidad de ; que tiene cada linea
+                for(int i = 0; i < 4; i++){
+                    String dato = linea.substring(0, linea.indexOf(";"));
+                    linea = linea.substring(linea.indexOf(";") + 1);
+                    //dependiendo del valor de i guardo el dato en el atributo correspondiente
+                    switch (i) {
+                        //primer dato el identificador
+                        case 0:
+                            identificacion = dato;
+                            break;
+                        case 1:
+                            modelo = dato;
+                            break;
+                        case 2:
+                            cantVuelos = Integer.parseInt(dato);
+                            break;
+                        case 3:
+                            cantAsientos = Integer.parseInt(dato);
+                            break;
+                            //el ultimo valor es el 4
+                        default:
+                        kmRecorridos = Double.parseDouble(dato);
+                            break;
+                    }
+                }
+                //creo el avion con los datos obtenidos
+                Avion nuevoAvion = new Avion(identificacion, modelo, cantVuelos, cantAsientos, kmRecorridos);
+                //lo guardo en el arreglo
+                aviones[posicion] = nuevoAvion;
+                posicion++;
             }
+
             bufferLectura.close();
-
-            //creo un array con la cantidad de lineas del archivo
-            //lineas = new String[contador];
-
-            //vuelvo a abrir el archivo para leer sus lineas y guardarlas en un arreglo
-            /* 
-            lectorArchivo = new FileReader(ruta);
-            bufferLectura = new BufferedReader(lectorArchivo);
-
-            int i = 0;
-            while ((linea = bufferLectura.readLine()) != null) {
-                lineas[i] = linea;
-                i++;
-            }
-            bufferLectura.close();
-            */
-            // bufferEscritura.close();
         } catch (FileNotFoundException ex) {
-            System.err.println(ex.getMessage() + "\nSignifica que el archivo del que queriamos leer no existe.");
+            System.err.println(ex.getMessage() + "\nEl archivo aviones no existe.");
         } catch (IOException ex) {
-            System.err.println("Error leyendo o escribiendo en algun archivo.");
+            System.err.println("Error leyendo o escribiendo en el archivo aviones.");
         }
 
-        //return lineas;
+        return aviones;
     }
-    public static void imprimirLineas(String[] lineas){
-        for (int i = 0; i < lineas.length; i++) {
-            System.out.println(lineas[i]);
+
+    
+    public static Ruta[] cargarRutas(){
+        String rutasEntrada = "C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\Rutas.txt";
+        Ruta[] rutas = new Ruta[22];
+        String linea = null;
+        int posicion = 0;
+
+        try {
+            FileReader lectorArchivo = new FileReader(rutasEntrada);
+            BufferedReader bufferLectura = new BufferedReader(lectorArchivo);
+
+            while ((linea = bufferLectura.readLine()) != null) {
+                String[] datos = linea.split(";");
+                String numRuta = datos[0];
+                String ciudadOrigen = datos[1];
+                String ciudadDestino = datos[2];
+                double distancia = Double.parseDouble(datos[3]);
+                boolean internacional;
+                if (datos[4].equalsIgnoreCase("Si")) {
+                    internacional = true;
+                } else {
+                    internacional = false;
+                }
+
+                Ruta nuevaRuta = new Ruta(numRuta, ciudadOrigen, ciudadDestino, distancia, internacional);
+                rutas[posicion] = nuevaRuta;
+                posicion++;
+            }
+
+            bufferLectura.close();
+
+        } catch (FileNotFoundException ex) {
+            System.err.println(ex.getMessage() + "\nEl archivo rutas no existe.");
+        } catch (IOException ex) {
+            System.err.println("Error leyendo o escribiendo en el archivo rutas.");
         }
+
+        return rutas;
     }
 }
