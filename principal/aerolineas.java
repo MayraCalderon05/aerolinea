@@ -34,7 +34,7 @@ public class aerolineas {
                 if (cantAsientos < 0 || cantAsientos > 300) {
                     System.out.println("La cantidad de asientos es inválida");
                 } else {
-                    Avion nuevoAvion = new Avion(identificacion, modelo, 0, cantAsientos, 0.00);
+                    Avion nuevoAvion = new Avion(identificacion, modelo, cantAsientos);
                     System.out.println("Avion registrado con éxito");
                     guardarAvion(aviones, nuevoAvion);
                     System.out.println("Avion guardado con éxito");
