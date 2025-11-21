@@ -8,24 +8,71 @@ public class aerolineas {
         Avion[] aviones = Lectura.cargarAvion();
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("ingresar id");
-        String id = sc.next();
+        
+        sc.close();
+    }
 
-        boolean esValido = validarIdAvion(id);
-        System.out.println(esValido);
+    // * */ metodo para agregar un nuevo avion
+    public static void agregarAvion(Avion[] aviones, Scanner sc) {
+        String identificacion;
+        String modelo;
+        int cantAsientos;
+
+        System.out.println("Ingrese la identificacion del avion:");
+        identificacion = sc.next();
+        if (validarIdAvion(identificacion)) {
+            if (existeAvion(aviones, identificacion)) {
+                System.out.println("El avion ingresado ya existe en la base de datos");
+            } else {
+                System.out.println("Ingrese el modelo del avion:");
+                modelo = sc.next();
+
+                System.out.println("Ingrese la cantidad de asientos que tiene el avión");
+                cantAsientos = sc.nextInt();
+                // valores imposibles
+                if (cantAsientos < 0 || cantAsientos > 300) {
+                    System.out.println("La cantidad de asientos es inválida");
+                } else {
+                    Avion nuevoAvion = new Avion(identificacion, modelo, 0, cantAsientos, 0.00);
+                    System.out.println("Avion registrado con éxito");
+                    guardarAvion(aviones, nuevoAvion);
+                    System.out.println("Avion guardado con éxito");
+                }
+
+            }
+        } else {
+            System.out.println("El identificador del avión no es válido");
+        }
 
     }
 
-    // metodo para agregar un nuevo avion
-    public static void agregarAvion(Avion[] aviones) {
+    public static void guardarAvion(Avion[] array, Avion nuevoAvion) {
+        int i = 0;
+        boolean noGuardado = true;
+        //mientras la variable guardado sea verdadera
+        while (i < array.length && noGuardado) {
+            if (array[i] == null) {
+                array[i] = nuevoAvion;
+                noGuardado = false;
+            } else {
+                i++;
+            }
+        }
+    }
 
-        String identificacion;
-        String modelo;
-        int cantVuelos;
-        int cantAsientos;
-        double kmRecorridos;
+    public static boolean existeAvion(Avion[] array, String id) {
+        boolean encontrado = false;
+        int i = 0;
 
-        System.out.println("Ingrese la identificacion del avion:");
+        do {
+            if (array[i] != null && array[i].getIdentificacion().equals(id)) {
+            encontrado = true;
+        } else {
+            i++;
+        }
+        } while (!encontrado && i < array.length);
+
+        return encontrado;
 
     }
 
@@ -88,7 +135,6 @@ public class aerolineas {
     }
 
     private static boolean verificarNumeros(String resto) {
-        int[] numeros = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         boolean valido = true;
         int i = 0;
         if (resto.length() <= 3) {
@@ -96,27 +142,10 @@ public class aerolineas {
                 char caracter = resto.charAt(i);
 
                 // verifico que sea un digito numerico por CODIGO ASCII
-                if (caracter >= '0' && caracter <= '9') {
-                    int digito = Integer.parseInt(String.valueOf(caracter));
-                    int j = 0;
-                    boolean noEncontrado = true;
-                    // solo verifica que sean numeros, para el caso que necesite numeros en el resto
-                    // de los digitos
-                    do {
-                        if (digito != numeros[j]) {
-                            noEncontrado = false;
-                        }
-                        j++;
-                    } while (j < numeros.length && noEncontrado);
-
-                    if (!noEncontrado) {
-                        valido = false;
-                    } else {
-                        i++;
-
-                    }
-                } else {
+                if (caracter < '0' || caracter > '9') {
                     valido = false;
+                } else {
+                    i++;
                 }
             }
         } else {
