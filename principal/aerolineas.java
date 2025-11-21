@@ -9,6 +9,7 @@ public class aerolineas {
         Scanner sc = new Scanner(System.in);
 
         
+        
         sc.close();
     }
 
@@ -164,5 +165,27 @@ public class aerolineas {
             existe = false;
         }
         return existe;
+    }
+
+    public static String mostrarDatosAvion(Avion[] array, String id) {
+        String info = "";
+        boolean noEncontrado = true;
+        int i = 0;
+
+        if (validarIdAvion(id)) {
+            while (noEncontrado && i<array.length) {
+                if (array[i].getIdentificacion().equals(id)) {
+                    info = array[i].toString();
+                    noEncontrado = false;
+                } else {
+                    i++;
+                }
+            }
+            if (noEncontrado) {
+                info = "No se ha encontrado información del avión: "+id;
+            }
+        }
+
+        return info;
     }
 }
