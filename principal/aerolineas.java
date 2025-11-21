@@ -82,8 +82,9 @@ public class aerolineas {
         boolean valido = false;
 
         // ?verifico que tenga el guion en el medio y que no se pase de caracteres y ahi
-        // analizo el resto
-        if (existeGuion(id)) {
+        // analizo el resto 
+        //necesito que tenga al menos 6 caracteres para que pueda ser valido
+        if (existeGuion(id) && id.length() >=6) {
             // la posicion 2 es del guion, no la toma en el substring
             String iniciales = id.substring(0, 2);
             // me refiero al resto de la cadena despues de las iniciales
@@ -174,7 +175,7 @@ public class aerolineas {
 
         if (validarIdAvion(id)) {
             while (noEncontrado && i<array.length) {
-                if (array[i].getIdentificacion().equals(id)) {
+                if (array[i] != null && array[i].getIdentificacion().equals(id)) {
                     info = array[i].toString();
                     noEncontrado = false;
                 } else {
