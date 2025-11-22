@@ -12,16 +12,27 @@ public class Vuelo {
     private boolean aterrizado;
 
     //constructores 
-    public Vuelo(String numeroVuelo, String idAvion, String idRuta,String dia, LocalTime horarioSalida, int cantPasajeros, boolean aterrizado){
+    public Vuelo(String numeroVuelo, Avion avion, Ruta ruta,String dia, LocalTime horarioSalida, int cantPasajeros, boolean aterrizado){
         this.numeroVuelo = numeroVuelo;
-        this.idAvion = idAvion;
-        this.idRuta = idRuta;
+        this.idAvion = avion.getIdentificacion();
+        this.idRuta = ruta.getNumRuta();
         this.dia = dia;
         this.horarioSalida = horarioSalida;
-        this.cantPasajeros = cantPasajeros;
+        this.cantPasajeros = avion.getCantAsientos();
         this.aterrizado = aterrizado;
+    }
+
+    public Vuelo(String numeroVuelo, Avion avion, Ruta ruta,String dia, LocalTime horarioSalida){
+        this.numeroVuelo = numeroVuelo;
+        this.idAvion = avion.getIdentificacion();
+        this.idRuta = ruta.getNumRuta();
+        this.dia = dia;
+        this.horarioSalida = horarioSalida;
+        this.cantPasajeros = avion.getCantAsientos();
+        this.aterrizado = false;
 
     }
+
     public Vuelo(String numeroVuelo){
         this.numeroVuelo = numeroVuelo;
         this.idAvion = "";
@@ -70,11 +81,11 @@ public class Vuelo {
                "Aterrizado: " + getAterrizado() + "\n";
     }
     //Modificadores
-    public void setIdAvion(String nuevoIdAvion){
-        this.idAvion = nuevoIdAvion;
+    public void setIdAvion(Avion nuevoIdAvion){
+        this.idAvion = nuevoIdAvion.getIdentificacion();
     }   
-    public void setIdRuta(String nuevoIdRuta){
-        this.idRuta = nuevoIdRuta;
+    public void setIdRuta(Ruta nuevoIdRuta){
+        this.idRuta = nuevoIdRuta.getNumRuta();
     }
     public void setDia(String nuevoDia){
         this.dia = nuevoDia;

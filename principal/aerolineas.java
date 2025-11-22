@@ -2,11 +2,17 @@ package principal;
 
 import principal.TDA.*;
 import java.util.Scanner;
+import java.time.LocalTime;
 
 public class aerolineas {
     public static void main(String[] args) {
         Avion[] aviones = Lectura.cargarAvion();
+        Vuelo[][] vuelos = Lectura.cargarVuelos();
+        Ruta[] rutas = Lectura.cargarRutas();
+
         Scanner sc = new Scanner(System.in);
+        // * */ metodo para agregar un nuevo avion
+        agregarVuelo(vuelos, aviones, rutas, sc);
 
         
         
@@ -188,5 +194,58 @@ public class aerolineas {
         }
 
         return info;
+    }
+
+    //metodo para cargar un nuevo vuelo
+    public static void agregarVuelo(Vuelo[][] vuelos, Avion[] aviones, Ruta[] rutas, Scanner sc) {
+        String numeroVuelo;
+        String idAvion;
+        String idRuta;
+        String dia;
+        String horarioSalidaStr;
+        LocalTime horarioSalida;
+
+        System.out.println("Ingrese el número de vuelo:");
+        numeroVuelo = sc.next();
+
+        System.out.println("Ingrese la identificación del avión:");
+        idAvion = sc.next();
+        Avion avion = Lectura.encontrarAvionPorId(idAvion);
+        while ( avion == null) {
+            System.out.println("No se encontró el avión con ID: " + idAvion);
+            System.out.println("Ingrese la identificación del avión nuevamente");
+            idAvion = sc.next();
+            avion = Lectura.encontrarAvionPorId(idAvion);
+        }
+        System.out.println("Ingrese el ID de la ruta:");
+            idRuta = sc.next();
+            Ruta ruta = Lectura.encontrarRutaPorId(idRuta);
+        while ( ruta == null) {
+            System.out.println("No se encontró la ruta con ID: " + idRuta);
+            System.out.println("Ingrese el ID de la ruta nuevamente");
+            idRuta = sc.next();
+            ruta = Lectura.encontrarRutaPorId(idRuta);
+        }
+        System.out.println("Ingrese el día de la semana:");
+        dia = sc.next();
+
+        System.out.println("Ingrese el horario de salida (hh:mm):");
+        horarioSalidaStr = sc.next();
+        horarioSalida = LocalTime.parse(horarioSalidaStr);
+
+        int posI = Lectura.obtenerIndiceDia(dia);
+        int posJ = Lectura.obtenerIndiceHorario(horarioSalida);
+        while (posI == -1 || posJ == -1 || vuelos[posI][posJ] != null) {
+            System.out.println("Día u horario inválido.");
+            System.out.println("Ingrese el día de la semana nuevamente:");
+            dia = sc.next();
+            System.out.println("Ingrese el horario de salida (hh:mm) nuevamente:");
+            horarioSalidaStr = sc.next();
+            horarioSalida = LocalTime.parse(horarioSalidaStr);
+            posI = Lectura.obtenerIndiceDia(dia);
+            posJ = Lectura.obtenerIndiceHorario(horarioSalida);
+        }
+        vuelos[posI][posJ] = new Vuelo(numeroVuelo, avion, ruta, dia, horarioSalida);
+        System.out.println("Vuelo agregado con éxito.");
     }
 }
