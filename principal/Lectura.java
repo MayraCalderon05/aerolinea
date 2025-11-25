@@ -1,12 +1,12 @@
 package principal;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 //import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-//import java.io.FileWriter;
+import java.io.FileWriter;
 import java.io.IOException;
-//import java.util.Arrays;
 
 import java.time.LocalTime;
 
@@ -242,5 +242,32 @@ public class Lectura {
             }
         }
         return indice;
+    }
+
+    public static void escritura(Vuelo[] vuelosOrdenados) {
+        String escritura = "C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\vuelosOrdenados.txt";
+        String linea = "Vuelos ordenados por distancia del día\n";
+        String arr="";
+
+        for(int i = 0; i < vuelosOrdenados.length; i++){
+                double distancia = vuelosOrdenados[i].getRuta().getDistancia();
+                arr +=
+                    "Vuelo: "+vuelosOrdenados[i].getNumeroVuelo()+"\n"+
+                    "   Ruta: "+vuelosOrdenados[i].getRuta().getNumRuta()+"\n"+
+                    "   Avion: "+vuelosOrdenados[i].getAvion().getIdentificacion()+"\n"+
+                    "   Distancia en km: "+distancia + "\n\n";
+        }
+
+        try {
+            FileWriter escritorArchivo = new FileWriter(escritura);
+            BufferedWriter bufferEscritura = new BufferedWriter(escritorArchivo);
+
+            bufferEscritura.write(linea+arr);
+
+            bufferEscritura.close();
+        } catch(IOException ex) {
+            System.err.println("Error escribiendo en algun archivo.");
+        }
+
     }
 }

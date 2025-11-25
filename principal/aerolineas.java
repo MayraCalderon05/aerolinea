@@ -2,7 +2,7 @@ package principal;
 
 import principal.TDA.*;
 
-import java.util.Arrays;
+//import java.util.Arrays;
 import java.util.Scanner;
 import java.time.LocalTime;
 
@@ -27,7 +27,7 @@ public class aerolineas {
         System.out.println("Ingrese la identificacion del avion:");
         identificacion = sc.next();
         if (validarIdAvion(identificacion)) {
-            if (existeAvion(aviones, identificacion)) {
+            if (existeAvion(identificacion)) {
                 System.out.println("El avion ingresado ya existe en la base de datos");
             } else {
                 System.out.println("Ingrese el modelo del avion:");
@@ -66,20 +66,13 @@ public class aerolineas {
         }
     }
 
-    public static boolean existeAvion(Avion[] array, String id) {
+    public static boolean existeAvion(String id) {
         boolean encontrado = false;
-        int i = 0;
-
-        do {
-            if (array[i] != null && array[i].getIdentificacion().equals(id)) {
-                encontrado = true;
-            } else {
-                i++;
-            }
-        } while (!encontrado && i < array.length);
+        if(Lectura.encontrarAvionPorId(id) != null){
+            encontrado = true;
+        }
 
         return encontrado;
-
     }
 
     public static boolean validarIdAvion(String id) {
@@ -386,6 +379,10 @@ public class aerolineas {
             System.out.println("No hay vuelos para el día "+dia);
         } else {
             quicksort(lista, 0, lista.length-1);
+            Lectura.escritura(lista);
+
+            //esto se manda al writer
+            /*
             System.out.println("Vuelos ordenados por distancia del día "+dia);
             System.out.println("---------------------------------------------------------");
             for(int i = 0; i < lista.length; i++){
@@ -396,7 +393,7 @@ public class aerolineas {
                     "   Avion: "+lista[i].getAvion().getIdentificacion()+"\n"+
                     "   Distancia en km: "+distancia
                 );
-            }
+                }*/
         }
     }
 
