@@ -381,19 +381,6 @@ public class aerolineas {
             quicksort(lista, 0, lista.length-1);
             Lectura.escritura(lista);
 
-            //esto se manda al writer
-            /*
-            System.out.println("Vuelos ordenados por distancia del día "+dia);
-            System.out.println("---------------------------------------------------------");
-            for(int i = 0; i < lista.length; i++){
-                double distancia = getDistanciaVuelo(lista[i]);
-                System.out.println(
-                    "Vuelo: "+lista[i].getNumeroVuelo()+"\n"+
-                    "   Ruta: "+lista[i].getRuta().getNumRuta()+"\n"+
-                    "   Avion: "+lista[i].getAvion().getIdentificacion()+"\n"+
-                    "   Distancia en km: "+distancia
-                );
-                }*/
         }
     }
 
