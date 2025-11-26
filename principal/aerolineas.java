@@ -8,13 +8,22 @@ import java.time.LocalTime;
 
 public class aerolineas {
     public static void main(String[] args) {
-        Avion[] aviones = Lectura.cargarAvion();
-        Vuelo[][] vuelos = Lectura.cargarVuelos();
-        Ruta[] rutas = Lectura.cargarRutas();
+
+        // Llamamos la carga de datos una sola vez al inicio
+        Lectura.cargarTodo();
+        // iniciamos las variables globales
+        Avion[] aviones = Lectura.aviones;
+        Ruta[] rutas = Lectura.rutas;
+        Vuelo[][] vuelos = Lectura.vuelos;  
 
         Scanner sc = new Scanner(System.in);
         ordenarXdistancia(vuelos, sc);
-
+        System.out.println("ingrese el número de vuelo que ha aterrizado:");
+        String numeroVuelo = sc.next();
+        vueloAterrizado(vuelos, numeroVuelo);
+        String vuelo = mostrarDatosAvion(aviones, "LV-HIJ");
+        System.out.println(vuelo);
+        
         sc.close();
     }
 
@@ -27,7 +36,7 @@ public class aerolineas {
         System.out.println("Ingrese la identificacion del avion:");
         identificacion = sc.next();
         if (validarIdAvion(identificacion)) {
-            if (existeAvion(identificacion)) {
+            if (existeAvion(aviones, identificacion)) {
                 System.out.println("El avion ingresado ya existe en la base de datos");
             } else {
                 System.out.println("Ingrese el modelo del avion:");
@@ -66,9 +75,9 @@ public class aerolineas {
         }
     }
 
-    public static boolean existeAvion(String id) {
+    public static boolean existeAvion(Avion[] aviones, String id) {
         boolean encontrado = false;
-        if(Lectura.encontrarAvionPorId(id) != null){
+        if(Lectura.encontrarAvionPorId(aviones, id) != null){
             encontrado = true;
         }
 
@@ -170,7 +179,7 @@ public class aerolineas {
         String info = "";
         boolean noEncontrado = true;
         int i = 0;
-
+        //validar primero si el id que se ingreso puede llegar a existir 
         if (validarIdAvion(id)) {
             while (noEncontrado && i < array.length) {
                 if (array[i] != null && array[i].getIdentificacion().equals(id)) {
@@ -202,21 +211,21 @@ public class aerolineas {
 
         System.out.println("Ingrese la identificación del avión:");
         idAvion = sc.next();
-        Avion avion = Lectura.encontrarAvionPorId(idAvion);
+        Avion avion = Lectura.encontrarAvionPorId(aviones, idAvion);
         while (avion == null) {
             System.out.println("No se encontró el avión con ID: " + idAvion);
             System.out.println("Ingrese la identificación del avión nuevamente");
             idAvion = sc.next();
-            avion = Lectura.encontrarAvionPorId(idAvion);
+            avion = Lectura.encontrarAvionPorId(aviones, idAvion);
         }
         System.out.println("Ingrese el ID de la ruta:");
         idRuta = sc.next();
-        Ruta ruta = Lectura.encontrarRutaPorId(idRuta);
+        Ruta ruta = Lectura.encontrarRutaPorId(rutas, idRuta);
         while (ruta == null) {
             System.out.println("No se encontró la ruta con ID: " + idRuta);
             System.out.println("Ingrese el ID de la ruta nuevamente");
             idRuta = sc.next();
-            ruta = Lectura.encontrarRutaPorId(idRuta);
+            ruta = Lectura.encontrarRutaPorId(rutas, idRuta);
         }
         System.out.println("Ingrese el día de la semana:");
         dia = sc.next();
@@ -273,7 +282,7 @@ public class aerolineas {
     }
 
     // busco la distancia por el ID de ruta
-    private static double getDistanciaVuelo(Vuelo vuelo) {
+    private static double obtenerDistanciaVuelo(Vuelo vuelo) {
         double distancia = vuelo.getRuta().getDistancia();
         return distancia;
     }
@@ -287,9 +296,9 @@ public class aerolineas {
 
         } else {
             int medio = (inicio + fin) / 2;
-            double rutaInicio = getDistanciaVuelo(arr[inicio]);
-            double rutaMedio = getDistanciaVuelo(arr[medio]);
-            double rutaFin = getDistanciaVuelo(arr[fin]);
+            double rutaInicio = obtenerDistanciaVuelo(arr[inicio]);
+            double rutaMedio = obtenerDistanciaVuelo(arr[medio]);
+            double rutaFin = obtenerDistanciaVuelo(arr[fin]);
 
             // rutaInicio < rutaMedio < rutaFin OR rutaFin < rutaMedio < rutaInicio
             // en caso de que rutaMedio este en el medio de los valores
@@ -320,18 +329,18 @@ public class aerolineas {
         izq = inicio;
         der = fin;
 
-        double distPivote = getDistanciaVuelo(arr[pivote]);
+        double distPivote = obtenerDistanciaVuelo(arr[pivote]);
 
         while (izq <= der) {
             // busco el elemento que tenga mayor distancia en km que el pivote
             // desde la izquierda
-            while (getDistanciaVuelo(arr[izq]) < distPivote) {
+            while (obtenerDistanciaVuelo(arr[izq]) < distPivote) {
                 izq++;
             }
 
             // busco el elemento que tenga menor distancia en km que el pivote
             // desde la derecha
-            while (getDistanciaVuelo(arr[der]) > distPivote) {
+            while (obtenerDistanciaVuelo(arr[der]) > distPivote) {
                 der--;
             }
 
@@ -383,5 +392,36 @@ public class aerolineas {
 
         }
     }
+
+    public static void vueloAterrizado(Vuelo[][] vuelos, String numeroVuelo) {
+        boolean encontrado = false;
+        int i = 0;
+        int j = 0;
+        while (i< vuelos.length && !encontrado) {
+            j=0;
+            while(j<vuelos[0].length && !encontrado){
+                if(vuelos[i][j] != null){
+                    if(vuelos[i][j].getNumeroVuelo().equals(numeroVuelo) && !vuelos[i][j].getAterrizado()){
+                        encontrado = true;
+                        vuelos[i][j].setAterrizado(true);
+                        actualizarAvionAterrizado(vuelos[i][j]);
+                    } else {
+                        j++;
+                    }
+                }
+            }
+            i++;
+        }
+       
+    }
+    public static void actualizarAvionAterrizado(Vuelo vuelo){
+        //actualiza la cantidad de vuelos del avion
+        int nuevosVuelos = vuelo.getAvion().getCantVuelos() + 1;
+        vuelo.getAvion().setCantVuelos(nuevosVuelos);
+        //actualiza los km recorridos del avion
+        double nuevosKm = vuelo.getAvion().getKmRecorridos() + vuelo.getRuta().getDistancia();
+        vuelo.getAvion().setKmRecorridos(nuevosKm);
+    }
+
 
 }

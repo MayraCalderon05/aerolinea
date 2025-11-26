@@ -15,41 +15,21 @@ import principal.TDA.Ruta;
 import principal.TDA.Vuelo;
 
 public class Lectura {
-
-    public static void mostrarMatrizVuelos(Vuelo[][] vuelos) {
-    String[] dias = {"Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"};
-    String[] horarios = {
-        "08:00", "09:00", "10:00", "11:00", "12:00",
-        "13:00", "14:00", "15:00", "16:00", "17:00",
-        "18:00", "19:00", "20:00", "21:00", "22:00"
-    };
-
-    // encabezado de horarios
-    System.out.print(String.format("%-12s", ""));
-    for (String h : horarios) {
-        System.out.print(String.format("%-12s", h));
-    }
-    System.out.println();
-
-    // filas con días y vuelos
-    for (int i = 0; i < vuelos.length; i++) {
-        System.out.print(String.format("%-12s", dias[i]));
-
-        for (int j = 0; j < vuelos[i].length; j++) {
-            if (vuelos[i][j] != null) {
-                System.out.print(String.format("%-12s", vuelos[i][j].getNumeroVuelo()));
-            } else {
-                System.out.print(String.format("%-12s", "----"));
-            }
-        }
-
-        System.out.println();
-    }
-}
         // String vuelosEntrada = "C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\Vuelos.txt";
+        //String avionesEntrada = "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Aviones.txt";
+
+    public static Avion[] aviones;
+    public static Ruta[] rutas;
+    public static Vuelo[][] vuelos;
+
+    public static void cargarTodo() {
+        aviones = Lectura.cargarAvion();
+        rutas = Lectura.cargarRutas();
+        vuelos = Lectura.cargarVuelos(aviones, rutas);
+    }
     public static Avion[] cargarAvion() {
         // ruta hacia el archivo txt
-        String avionesEntrada = "C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\Aviones.txt";
+        String avionesEntrada = "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Aviones.txt";
         // creo un arreglo con 2 espacios mas en caso de guardar mas aviones
         Avion[] aviones = new Avion[22];
         String linea = null;
@@ -83,12 +63,11 @@ public class Lectura {
         } catch (IOException ex) {
             System.err.println("Error leyendo o escribiendo en el archivo aviones.");
         }
-
         return aviones;
     }
-
+    //String rutasEntrada = "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Rutas.txt";
     public static Ruta[] cargarRutas() {
-        String rutasEntrada = "C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\Rutas.txt";
+        String rutasEntrada = "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Rutas.txt";
         Ruta[] rutas = new Ruta[22];
         String linea = null;
         int posicion = 0;
@@ -126,9 +105,10 @@ public class Lectura {
 
         return rutas;
     }
-
-    public static Vuelo[][] cargarVuelos() {
-        String vuelosEntrada = "C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\Vuelos.txt";
+    // nueva versión: recibe el arreglo de aviones ya cargado para usar las mismas instancias
+    public static Vuelo[][] cargarVuelos(Avion[] aviones, Ruta[] rutas ) {
+        //String vuelosEntrada = "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Vuelos.txt";
+        String vuelosEntrada = "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Vuelos.txt";
         Vuelo[][] vuelos = new Vuelo[7][15];
         String linea = null;
         int posI = 0;
@@ -143,9 +123,9 @@ public class Lectura {
 
                 String numeroVuelo = datos[0];
                 String idAvion = datos[1];
-                Avion avion = encontrarAvionPorId(idAvion);
+                Avion avion = encontrarAvionPorId(aviones, idAvion);
                 String idRuta = datos[2];
-                Ruta ruta = encontrarRutaPorId(idRuta);
+                Ruta ruta = encontrarRutaPorId(rutas, idRuta);
                 String dia = datos[3];
                 LocalTime horarioSalida = LocalTime.parse(datos[4]);
 
@@ -166,9 +146,7 @@ public class Lectura {
 
         return vuelos;
     }
-
-    public static Avion encontrarAvionPorId(String idAvion) {
-        Avion[] aviones = cargarAvion();
+    public static Avion encontrarAvionPorId(Avion[] aviones, String idAvion) {
         Avion resultado = null;
         int i = 0;
         boolean encontrado = false;
@@ -183,8 +161,7 @@ public class Lectura {
         }
         return resultado;
     }
-    public static Ruta encontrarRutaPorId(String idRuta) {
-        Ruta[] rutas = cargarRutas();
+    public static Ruta encontrarRutaPorId(Ruta[] rutas, String idRuta) {
         Ruta resultado = null;
         int i = 0;
         boolean encontrado = false;
