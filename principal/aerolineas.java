@@ -18,7 +18,6 @@ public class aerolineas {
 
         Scanner sc = new Scanner(System.in);
 
-        agregarVuelo(vuelos, aviones, rutas, sc);
 
         sc.close();
     }
