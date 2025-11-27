@@ -2,7 +2,6 @@ package principal;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-//import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -15,8 +14,8 @@ import principal.TDA.Ruta;
 import principal.TDA.Vuelo;
 
 public class Lectura {
-    // String vuelosEntrada = "C:\\Users\\Usuario\\Documents\\Desarrollo de
-    // algoritmos\\tpFinal\\recursos\\Vuelos.txt";
+    // String vuelosEntrada = 
+    //"C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\Vuelos.txt";
     // String avionesEntrada =
     // "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Aviones.txt";
 
@@ -32,7 +31,7 @@ public class Lectura {
 
     public static Avion[] cargarAvion() {
         // ruta hacia el archivo txt
-        String avionesEntrada = "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Aviones.txt";
+        String avionesEntrada = "C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\Aviones.txt";
         // creo un arreglo con 2 espacios mas en caso de guardar mas aviones
         Avion[] aviones = new Avion[22];
         String linea = null;
@@ -69,11 +68,9 @@ public class Lectura {
         return aviones;
     }
 
-    // String rutasEntrada =
-    // "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Rutas.txt";
     public static Ruta[] cargarRutas() {
-        String rutasEntrada = "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Rutas.txt";
-        Ruta[] rutas = new Ruta[22];
+        String rutasEntrada = "C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\Rutas.txt";
+        Ruta[] rutas = new Ruta[20];
         String linea = null;
         int posicion = 0;
 
@@ -112,9 +109,7 @@ public class Lectura {
     }
 
     public static Vuelo[][] cargarVuelos(Avion[] aviones, Ruta[] rutas) {
-        // String vuelosEntrada =
-        // "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Vuelos.txt";
-        String vuelosEntrada = "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Vuelos.txt";
+        String vuelosEntrada = "C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\Vuelos.txt";
         Vuelo[][] vuelos = new Vuelo[7][15];
         String linea = null;
         int posI = 0;

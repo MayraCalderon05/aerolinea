@@ -38,8 +38,18 @@ public class Ruta {
     public double getDistancia(){
         return this.distancia;
     }
-    public boolean isInternacional() {
+    public boolean getInternacional(){
         return this.internacional;
+    }
+    public String isInternacional() {
+        String rta;
+        if (getInternacional()) {
+            rta = "Si";
+        } else {
+            rta = "No";
+        }
+
+        return rta;
     }
 
     public void setNumRuta(String nuevoNumRuta){

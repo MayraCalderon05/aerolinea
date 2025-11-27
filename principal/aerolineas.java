@@ -14,16 +14,11 @@ public class aerolineas {
         // iniciamos las variables globales
         Avion[] aviones = Lectura.aviones;
         Ruta[] rutas = Lectura.rutas;
-        Vuelo[][] vuelos = Lectura.vuelos;  
+        Vuelo[][] vuelos = Lectura.vuelos;
 
         Scanner sc = new Scanner(System.in);
-        ordenarXdistancia(vuelos, sc);
-        System.out.println("ingrese el número de vuelo que ha aterrizado:");
-        String numeroVuelo = sc.next();
-        vueloAterrizado(vuelos, numeroVuelo);
-        String vuelo = mostrarDatosAvion(aviones, "LV-HIJ");
-        System.out.println(vuelo);
-        
+
+
         sc.close();
     }
 
@@ -77,7 +72,7 @@ public class aerolineas {
 
     public static boolean existeAvion(Avion[] aviones, String id) {
         boolean encontrado = false;
-        if(Lectura.encontrarAvionPorId(aviones, id) != null){
+        if (Lectura.encontrarAvionPorId(aviones, id) != null) {
             encontrado = true;
         }
 
@@ -177,22 +172,49 @@ public class aerolineas {
 
     public static String mostrarDatosAvion(Avion[] array, String id) {
         String info = "";
-        //validar primero si el id que se ingreso puede llegar a existir 
+        // validar primero si el id que se ingreso puede llegar a existir
         if (validarIdAvion(id)) {
             Avion encontrado = Lectura.encontrarAvionPorId(array, id);
             if (encontrado != null) {
                 info = encontrado.toString();
             } else {
-                    info = "No se encontró ningún avión con el ID ingresado." ;
+                info = "No se encontró ningún avión con el ID ingresado.";
             }
         } else {
-            info = "El ID del avión ingresado no es válido." ;
+            info = "El ID del avión ingresado no es válido.";
         }
 
         return info;
     }
 
     // metodo para cargar un nuevo vuelo
+    private static boolean existeVuelo(Vuelo[][] vuelos, String num) {
+        boolean existe = false;
+        int i = 0;
+        int j = 0;
+        do {
+            while (j < vuelos[i].length) {
+                if (vuelos[i][j] != null && vuelos[i][j].getNumeroVuelo().equals(num)) {
+                    existe = true;
+                }
+                j++;
+            }
+            j = 0;
+            i++;
+        } while (!existe && i < vuelos.length);
+
+        return existe;
+    }
+
+    private static boolean existeRuta(Ruta[] rutas, String id) {
+        boolean existe = false;
+        if (Lectura.encontrarRutaPorId(rutas, id) != null) {
+            existe = true;
+        }
+
+        return existe;
+    }
+
     public static void agregarVuelo(Vuelo[][] vuelos, Avion[] aviones, Ruta[] rutas, Scanner sc) {
         String numeroVuelo;
         String idAvion;
@@ -203,56 +225,72 @@ public class aerolineas {
 
         System.out.println("Ingrese el número de vuelo:");
         numeroVuelo = sc.next();
-
-        System.out.println("Ingrese la identificación del avión:");
-        idAvion = sc.next();
-        Avion avion = Lectura.encontrarAvionPorId(aviones, idAvion);
-        while (avion == null) {
-            System.out.println("No se encontró el avión con ID: " + idAvion);
-            System.out.println("Ingrese la identificación del avión nuevamente");
+        // valido que no exista
+        if (!existeVuelo(vuelos, numeroVuelo)) {
+            System.out.println("Ingrese la identificación del avión:");
             idAvion = sc.next();
-            avion = Lectura.encontrarAvionPorId(aviones, idAvion);
-        }
-        System.out.println("Ingrese el ID de la ruta:");
-        idRuta = sc.next();
-        Ruta ruta = Lectura.encontrarRutaPorId(rutas, idRuta);
-        while (ruta == null) {
-            System.out.println("No se encontró la ruta con ID: " + idRuta);
-            System.out.println("Ingrese el ID de la ruta nuevamente");
+
+            Avion avion = Lectura.encontrarAvionPorId(aviones, idAvion);
+
+            while (avion == null) {
+                System.out.println("No se encontró el avión con ID: " + idAvion);
+                System.out.println("Ingrese la identificación del avión nuevamente");
+                idAvion = sc.next();
+                avion = Lectura.encontrarAvionPorId(aviones, idAvion);
+            }
+
+            System.out.println("Ingrese el ID de la ruta:");
             idRuta = sc.next();
-            ruta = Lectura.encontrarRutaPorId(rutas, idRuta);
-        }
-        System.out.println("Ingrese el día de la semana:");
-        dia = sc.next();
+            // valido que sea una ruta valida
+            if (existeRuta(rutas, idRuta)) {
+                Ruta ruta = Lectura.encontrarRutaPorId(rutas, idRuta);
+                while (ruta == null) {
+                    System.out.println("No se encontró la ruta con ID: " + idRuta);
+                    System.out.println("Ingrese el ID de la ruta nuevamente");
+                    idRuta = sc.next();
+                    ruta = Lectura.encontrarRutaPorId(rutas, idRuta);
+                }
+                System.out.println("Ingrese el día de la semana:");
+                dia = sc.next();
 
-        System.out.println("Ingrese el horario de salida (hh:mm):");
-        horarioSalidaStr = sc.next();
-        horarioSalida = LocalTime.parse(horarioSalidaStr);
+                System.out.println("Ingrese el horario de salida (hh:mm):");
+                horarioSalidaStr = sc.next();
+                horarioSalida = LocalTime.parse(horarioSalidaStr);
 
-        int posI = Lectura.obtenerIndiceDia(dia);
-        int posJ = Lectura.obtenerIndiceHorario(horarioSalida);
-        while (posI == -1 || posJ == -1 || vuelos[posI][posJ] != null) {
-            System.out.println("Día u horario inválido.");
-            System.out.println("Ingrese el día de la semana nuevamente:");
-            dia = sc.next();
-            System.out.println("Ingrese el horario de salida (hh:mm) nuevamente:");
-            horarioSalidaStr = sc.next();
-            horarioSalida = LocalTime.parse(horarioSalidaStr);
-            posI = Lectura.obtenerIndiceDia(dia);
-            posJ = Lectura.obtenerIndiceHorario(horarioSalida);
+                int posI = Lectura.obtenerIndiceDia(dia);
+                int posJ = Lectura.obtenerIndiceHorario(horarioSalida);
+
+                while (posI == -1 || posJ == -1 || vuelos[posI][posJ] != null) {
+                    System.out.println("Día u horario inválido o ya está ocupado.");
+                    System.out.println("Ingrese el día de la semana nuevamente:");
+                    dia = sc.next();
+                    System.out.println("Ingrese el horario de salida (hh:mm) nuevamente:");
+                    horarioSalidaStr = sc.next();
+                    horarioSalida = LocalTime.parse(horarioSalidaStr);
+                    posI = Lectura.obtenerIndiceDia(dia);
+                    posJ = Lectura.obtenerIndiceHorario(horarioSalida);
+                }
+
+                vuelos[posI][posJ] = new Vuelo(numeroVuelo, avion, ruta, dia, horarioSalida);
+                System.out.println("Vuelo agregado con éxito.");
+            } else {
+                System.out.println("La ruta que está buscando no existe.");
+            }
+
+        } else {
+            System.out.println("Este vuelo ya existe.");
         }
-        vuelos[posI][posJ] = new Vuelo(numeroVuelo, avion, ruta, dia, horarioSalida);
-        System.out.println("Vuelo agregado con éxito.");
+
     }
 
     // metodo de ordenamiento QUICK SORT para ordenar vuelos por distancia en km de
     // forma ascendente
     // primero pongo todos los vuelos en un arreglo para que sea mas facil
-    private static Vuelo[] filtrarDia(Vuelo[][] mat, String dia){
+    private static Vuelo[] filtrarDia(Vuelo[][] mat, String dia) {
         Vuelo[] listaVuelos = new Vuelo[cuentaElementos(mat, dia)];
         int fila = Lectura.obtenerIndiceDia(dia);
         int i = 0;
-        for(int columna = 0; columna < mat[fila].length; columna++){
+        for (int columna = 0; columna < mat[fila].length; columna++) {
             if (mat[fila][columna] != null) {
                 listaVuelos[i] = mat[fila][columna];
                 i++;
@@ -260,13 +298,14 @@ public class aerolineas {
         }
         return listaVuelos;
     }
-    //defino el tamaño del arreglo
+
+    // defino el tamaño del arreglo
     private static int cuentaElementos(Vuelo[][] mat, String dia) {
         int indiceFila = Lectura.obtenerIndiceDia(dia);
         int i = 0;
         int contador = 0;
 
-        while (i < mat[indiceFila].length){
+        while (i < mat[indiceFila].length) {
             if (mat[indiceFila][i] != null) {
                 contador++;
             }
@@ -278,12 +317,15 @@ public class aerolineas {
 
     // busco la distancia por el ID de ruta
     private static double obtenerDistanciaVuelo(Vuelo vuelo) {
-        double distancia = vuelo.getRuta().getDistancia();
+        double distancia = 0.00;
+        if (vuelo != null) {
+            distancia = vuelo.getRuta().getDistancia();
+        }
         return distancia;
     }
 
     // metodo para elegir un pivot segun la mediana
-    private static int mediana(Vuelo[] arr, int inicio, int   fin) {
+    private static int mediana(Vuelo[] arr, int inicio, int fin) {
         int indice;
         // en caso de que los parametros no sean validos
         if (inicio < 0 || fin >= arr.length || inicio > fin) {
@@ -298,13 +340,13 @@ public class aerolineas {
             // rutaInicio < rutaMedio < rutaFin OR rutaFin < rutaMedio < rutaInicio
             // en caso de que rutaMedio este en el medio de los valores
             if (((rutaInicio <= rutaMedio) && (rutaMedio <= rutaFin)) ||
-                ((rutaFin <= rutaMedio) && (rutaMedio <= rutaInicio))) {
+                    ((rutaFin <= rutaMedio) && (rutaMedio <= rutaInicio))) {
                 indice = medio;
 
                 // rutaMedio < rutaInicio < rutaFin OR rutaFin < rutaInicio < rutaMedio
                 // en caso de que rutaInicio este en el medio de los valores
             } else if (((rutaMedio <= rutaInicio) && (rutaInicio <= rutaFin)) ||
-                        ((rutaFin <= rutaInicio) && (rutaInicio <= rutaMedio))) {
+                    ((rutaFin <= rutaInicio) && (rutaInicio <= rutaMedio))) {
                 indice = inicio;
             } else {
                 // que la rutaFin sea la que esta en el medio ya que no hay otro caso
@@ -373,18 +415,21 @@ public class aerolineas {
 
     }
 
-    public static void ordenarXdistancia(Vuelo[][] mat, Scanner sc){
+    public static void ordenarXdistancia(Vuelo[][] mat, Scanner sc) {
         System.out.println("ingrese el día del que desea obtener información");
         String dia = sc.next();
+        if (Lectura.obtenerIndiceDia(dia) != -1) {
+            Vuelo[] lista = filtrarDia(mat, dia);
 
-        Vuelo[] lista = filtrarDia(mat, dia);
+            if (lista.length == 0) {
+                System.out.println("No hay vuelos para el día " + dia);
+            } else {
+                quicksort(lista, 0, lista.length - 1);
+                Lectura.escritura(lista);
 
-        if (lista.length == 0) {
-            System.out.println("No hay vuelos para el día "+dia);
+            }
         } else {
-            quicksort(lista, 0, lista.length-1);
-            Lectura.escritura(lista);
-
+            System.out.println("El día ingresado no es válido");
         }
     }
 
@@ -392,11 +437,11 @@ public class aerolineas {
         boolean encontrado = false;
         int i = 0;
         int j = 0;
-        while (i< vuelos.length && !encontrado) {
-            j=0;
-            while(j<vuelos[0].length && !encontrado){
-                if(vuelos[i][j] != null){
-                    if(vuelos[i][j].getNumeroVuelo().equals(numeroVuelo) && !vuelos[i][j].getAterrizado()){
+        while (i < vuelos.length && !encontrado) {
+            j = 0;
+            while (j < vuelos[0].length && !encontrado) {
+                if (vuelos[i][j] != null) {
+                    if (vuelos[i][j].getNumeroVuelo().equals(numeroVuelo) && !vuelos[i][j].getAterrizado()) {
                         encontrado = true;
                         vuelos[i][j].setAterrizado(true);
                         actualizarAvionAterrizado(vuelos[i][j]);
@@ -408,14 +453,68 @@ public class aerolineas {
             i++;
         }
     }
-    public static void actualizarAvionAterrizado(Vuelo vuelo){
-        //actualiza la cantidad de vuelos del avion
+
+    public static void actualizarAvionAterrizado(Vuelo vuelo) {
+        // actualiza la cantidad de vuelos del avion
         int nuevosVuelos = vuelo.getAvion().getCantVuelos() + 1;
         vuelo.getAvion().setCantVuelos(nuevosVuelos);
-        //actualiza los km recorridos del avion
+        // actualiza los km recorridos del avion
         double nuevosKm = vuelo.getAvion().getKmRecorridos() + vuelo.getRuta().getDistancia();
         vuelo.getAvion().setKmRecorridos(nuevosKm);
     }
 
+    // para establecer el espacio del arreglo que busca las rutas
+    private static int contarRutas(double distMin, double distMax, Ruta[] rutas) {
+        int contador = 0;
 
+        for (int i = 0; i < rutas.length; i++) {
+            double distancia = rutas[i].getDistancia();
+            if ((distancia >= distMin) && (distancia <= distMax)) {
+                contador++;
+            }
+
+        }
+
+        return contador;
+    }
+
+    public static Ruta[] buscarRutas(double distMin, double distMax, Ruta[] rutas) {
+        int tamanio = contarRutas(distMin, distMax, rutas);
+        Ruta[] encontradas;
+        if (tamanio == 0) {
+            encontradas = new Ruta[0];
+        } else {
+            encontradas = new Ruta[tamanio];
+            int j = 0;
+            for (int i = 0; i < rutas.length; i++) {
+                double distancia = rutas[i].getDistancia();
+                if ((distancia >= distMin) && (distancia <= distMax)) {
+                    encontradas[j] = rutas[i];
+                    j++;
+                }
+            }
+        }
+
+        return encontradas;
+    }
+
+    public static void encuentraRutas(Ruta[] rutas, Scanner sc) {
+        System.out.println("Ingrese la distancia mínima a partir de la que quiere buscar");
+        int distMin = sc.nextInt();
+        if (distMin >= 0) {
+            System.out.println("Ingrese la distancia máxima hasta donde quiere buscar");
+            int distMax = sc.nextInt();
+
+            Ruta[] rutasEncontradas = buscarRutas(distMin, distMax, rutas);
+            if (rutasEncontradas.length > 0) {
+                for (int i = 0; i < rutasEncontradas.length; i++) {
+                    System.out.println(rutasEncontradas[i].toString() + "\n");
+                }
+            } else {
+                System.out.println("No se encontraron rutas en el rango de distancia ingresado");
+            }
+        } else {
+            System.out.println("La distancia mínima ingresada no es válida");
+        }
+    }
 }
