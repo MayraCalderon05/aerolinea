@@ -15,8 +15,10 @@ import principal.TDA.Ruta;
 import principal.TDA.Vuelo;
 
 public class Lectura {
-        // String vuelosEntrada = "C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\Vuelos.txt";
-        //String avionesEntrada = "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Aviones.txt";
+    // String vuelosEntrada = "C:\\Users\\Usuario\\Documents\\Desarrollo de
+    // algoritmos\\tpFinal\\recursos\\Vuelos.txt";
+    // String avionesEntrada =
+    // "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Aviones.txt";
 
     public static Avion[] aviones;
     public static Ruta[] rutas;
@@ -27,6 +29,7 @@ public class Lectura {
         rutas = Lectura.cargarRutas();
         vuelos = Lectura.cargarVuelos(aviones, rutas);
     }
+
     public static Avion[] cargarAvion() {
         // ruta hacia el archivo txt
         String avionesEntrada = "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Aviones.txt";
@@ -65,7 +68,9 @@ public class Lectura {
         }
         return aviones;
     }
-    //String rutasEntrada = "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Rutas.txt";
+
+    // String rutasEntrada =
+    // "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Rutas.txt";
     public static Ruta[] cargarRutas() {
         String rutasEntrada = "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Rutas.txt";
         Ruta[] rutas = new Ruta[22];
@@ -105,9 +110,10 @@ public class Lectura {
 
         return rutas;
     }
-    // nueva versión: recibe el arreglo de aviones ya cargado para usar las mismas instancias
-    public static Vuelo[][] cargarVuelos(Avion[] aviones, Ruta[] rutas ) {
-        //String vuelosEntrada = "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Vuelos.txt";
+
+    public static Vuelo[][] cargarVuelos(Avion[] aviones, Ruta[] rutas) {
+        // String vuelosEntrada =
+        // "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Vuelos.txt";
         String vuelosEntrada = "C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Vuelos.txt";
         Vuelo[][] vuelos = new Vuelo[7][15];
         String linea = null;
@@ -129,7 +135,7 @@ public class Lectura {
                 String dia = datos[3];
                 LocalTime horarioSalida = LocalTime.parse(datos[4]);
 
-                //obtiene las posiciones del vuelo en la matriz
+                // obtiene las posiciones del vuelo en la matriz
                 posI = obtenerIndiceDia(dia);
                 posJ = obtenerIndiceHorario(horarioSalida);
                 // crea el vuelo y lo guarda en la posicion correspondiente
@@ -146,6 +152,7 @@ public class Lectura {
 
         return vuelos;
     }
+
     public static Avion encontrarAvionPorId(Avion[] aviones, String idAvion) {
         Avion resultado = null;
         int i = 0;
@@ -161,6 +168,7 @@ public class Lectura {
         }
         return resultado;
     }
+
     public static Ruta encontrarRutaPorId(Ruta[] rutas, String idRuta) {
         Ruta resultado = null;
         int i = 0;
@@ -173,46 +181,49 @@ public class Lectura {
                 }
             }
             i++;
-            
+
         }
         return resultado;
     }
+
     public static int obtenerIndiceDia(String dia) {
-        String[] diasSemana = {"Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"};
+        String[] diasSemana = { "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo" };
         int indice = -1;
         int i = 0;
-        while(i < diasSemana.length && indice == -1) {
-            if(diasSemana[i].equalsIgnoreCase(dia)) {
+        while (i < diasSemana.length && indice == -1) {
+            if (diasSemana[i].equalsIgnoreCase(dia)) {
                 indice = i;
-            }else {
-            i++;
+            } else {
+                i++;
             }
         }
         return indice;
     }
+
     public static int obtenerIndiceHorario(LocalTime horario) {
-        //teniendo en cuenta que los horarios son cada una hora desde las 08:00 hasta las 22:00
+        // teniendo en cuenta que los horarios son cada una hora desde las 08:00 hasta
+        // las 22:00
         LocalTime[] horarios = {
-            LocalTime.parse("08:00"),
-            LocalTime.parse("09:00"),
-            LocalTime.parse("10:00"),
-            LocalTime.parse("11:00"),
-            LocalTime.parse("12:00"),
-            LocalTime.parse("13:00"),
-            LocalTime.parse("14:00"),
-            LocalTime.parse("15:00"),
-            LocalTime.parse("16:00"),
-            LocalTime.parse("17:00"),
-            LocalTime.parse("18:00"),
-            LocalTime.parse("19:00"),
-            LocalTime.parse("20:00"),
-            LocalTime.parse("21:00"),
-            LocalTime.parse("22:00")
+                LocalTime.parse("08:00"),
+                LocalTime.parse("09:00"),
+                LocalTime.parse("10:00"),
+                LocalTime.parse("11:00"),
+                LocalTime.parse("12:00"),
+                LocalTime.parse("13:00"),
+                LocalTime.parse("14:00"),
+                LocalTime.parse("15:00"),
+                LocalTime.parse("16:00"),
+                LocalTime.parse("17:00"),
+                LocalTime.parse("18:00"),
+                LocalTime.parse("19:00"),
+                LocalTime.parse("20:00"),
+                LocalTime.parse("21:00"),
+                LocalTime.parse("22:00")
         };
         int indice = -1;
         int i = 0;
-        while(i < horarios.length && indice == -1) {
-            if(horarios[i].equals(horario)) {
+        while (i < horarios.length && indice == -1) {
+            if (horarios[i].equals(horario)) {
                 indice = i;
             } else {
                 i++;
@@ -224,25 +235,24 @@ public class Lectura {
     public static void escritura(Vuelo[] vuelosOrdenados) {
         String escritura = "C:\\Users\\Usuario\\Documents\\Desarrollo de algoritmos\\tpFinal\\recursos\\vuelosOrdenados.txt";
         String linea = "Vuelos ordenados por distancia del día\n";
-        String arr="";
+        String arr = "";
 
-        for(int i = 0; i < vuelosOrdenados.length; i++){
-                double distancia = vuelosOrdenados[i].getRuta().getDistancia();
-                arr +=
-                    "Vuelo: "+vuelosOrdenados[i].getNumeroVuelo()+"\n"+
-                    "   Ruta: "+vuelosOrdenados[i].getRuta().getNumRuta()+"\n"+
-                    "   Avion: "+vuelosOrdenados[i].getAvion().getIdentificacion()+"\n"+
-                    "   Distancia en km: "+distancia + "\n\n";
+        for (int i = 0; i < vuelosOrdenados.length; i++) {
+            double distancia = vuelosOrdenados[i].getRuta().getDistancia();
+            arr += "Vuelo: " + vuelosOrdenados[i].getNumeroVuelo() + "\n" +
+                    "   Ruta: " + vuelosOrdenados[i].getRuta().getNumRuta() + "\n" +
+                    "   Avion: " + vuelosOrdenados[i].getAvion().getIdentificacion() + "\n" +
+                    "   Distancia en km: " + distancia + "\n\n";
         }
 
         try {
             FileWriter escritorArchivo = new FileWriter(escritura);
             BufferedWriter bufferEscritura = new BufferedWriter(escritorArchivo);
 
-            bufferEscritura.write(linea+arr);
+            bufferEscritura.write(linea + arr);
 
             bufferEscritura.close();
-        } catch(IOException ex) {
+        } catch (IOException ex) {
             System.err.println("Error escribiendo en algun archivo.");
         }
 

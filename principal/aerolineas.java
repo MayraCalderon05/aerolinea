@@ -177,21 +177,16 @@ public class aerolineas {
 
     public static String mostrarDatosAvion(Avion[] array, String id) {
         String info = "";
-        boolean noEncontrado = true;
-        int i = 0;
         //validar primero si el id que se ingreso puede llegar a existir 
         if (validarIdAvion(id)) {
-            while (noEncontrado && i < array.length) {
-                if (array[i] != null && array[i].getIdentificacion().equals(id)) {
-                    info = array[i].toString();
-                    noEncontrado = false;
-                } else {
-                    i++;
-                }
+            Avion encontrado = Lectura.encontrarAvionPorId(array, id);
+            if (encontrado != null) {
+                info = encontrado.toString();
+            } else {
+                    info = "No se encontró ningún avión con el ID ingresado." ;
             }
-            if (noEncontrado) {
-                info = "No se ha encontrado información del avión: " + id;
-            }
+        } else {
+            info = "El ID del avión ingresado no es válido." ;
         }
 
         return info;
@@ -412,7 +407,6 @@ public class aerolineas {
             }
             i++;
         }
-       
     }
     public static void actualizarAvionAterrizado(Vuelo vuelo){
         //actualiza la cantidad de vuelos del avion
