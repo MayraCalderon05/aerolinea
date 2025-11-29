@@ -8,7 +8,6 @@ import java.time.LocalTime;
 
 public class aerolineas {
     public static void main(String[] args) {
-
         // Llamamos la carga de datos una sola vez al inicio
         Lectura.cargarTodo();
         // iniciamos las variables globales
@@ -18,6 +17,10 @@ public class aerolineas {
 
         Scanner sc = new Scanner(System.in);
 
+        // Lectura.mostrarMatrizVuelos(vuelos);
+        agregarVuelo(vuelos, aviones, rutas, sc);
+        Lectura.mostrarMatrizVuelos(vuelos);
+        mostrarHorariosSinVuelos(vuelos);
 
         sc.close();
     }
@@ -206,81 +209,156 @@ public class aerolineas {
         return existe;
     }
 
-    private static boolean existeRuta(Ruta[] rutas, String id) {
-        boolean existe = false;
-        if (Lectura.encontrarRutaPorId(rutas, id) != null) {
-            existe = true;
-        }
+    private static Avion solicitarAvion(Avion[] aviones, Scanner sc) {
+        String idAvion;
+        Avion avionEncontrado = null;
+        boolean continuar = true;
 
-        return existe;
+        do {
+            System.out.println("Ingrese la identificación del avión:");
+            idAvion = sc.next();
+
+            avionEncontrado = Lectura.encontrarAvionPorId(aviones, idAvion);
+
+            if (avionEncontrado == null) {
+                String respuesta = enviarConfirmacion(sc, "No se encontró el avión con ID: " + idAvion);
+                continuar = mensajeConfirmacion(respuesta);
+            }
+
+        } while (avionEncontrado == null && continuar);
+
+        return avionEncontrado;
+
+    }
+
+    private static Ruta solicitarRuta(Ruta[] rutas, Scanner sc) {
+        String idRuta;
+        Ruta rutaEncontrada = null;
+        boolean continuar = true;
+
+        do {
+            System.out.println("Ingrese el ID de la ruta:");
+            idRuta = sc.next();
+
+            rutaEncontrada = Lectura.encontrarRutaPorId(rutas, idRuta);
+
+            if (rutaEncontrada == null) {
+                String respuesta = enviarConfirmacion(sc, "No se encontró la ruta con ID: " + idRuta);
+                continuar = mensajeConfirmacion(respuesta);
+            }
+
+        } while (rutaEncontrada == null && continuar);
+
+        return rutaEncontrada;
+
+    }
+
+    public static String solicitarDia(Scanner sc) {
+        boolean continua = true;
+        String dia;
+        int posI = -1;
+
+        do {
+            System.out.println("Ingrese el día de la semana:");
+            dia = sc.next();
+            posI = Lectura.obtenerIndiceDia(dia);
+
+            if (posI == -1) {
+                String rta = enviarConfirmacion(sc, "El día ingresado no es válido.");
+                continua = mensajeConfirmacion(rta);
+            }
+        } while (continua && posI == -1);
+
+        return dia;
+    }
+
+    public static LocalTime solicitarHorario(Scanner sc) {
+        boolean continua = true;
+        String horarioSalidaStr;
+        LocalTime horarioSalida;
+        int posJ = -1;
+
+        do {
+            System.out.println("Ingrese el horario de salida (hh:mm):");
+            horarioSalidaStr = sc.next();
+            horarioSalida = LocalTime.parse(horarioSalidaStr);
+            posJ = Lectura.obtenerIndiceHorario(horarioSalida);
+
+            if (posJ == -1) {
+                String rta = enviarConfirmacion(sc, "El horario ingresado no es válido.");
+                continua = mensajeConfirmacion(rta);
+            }
+        } while (continua && posJ == -1);
+
+        return horarioSalida;
     }
 
     public static void agregarVuelo(Vuelo[][] vuelos, Avion[] aviones, Ruta[] rutas, Scanner sc) {
         String numeroVuelo;
-        String idAvion;
-        String idRuta;
-        String dia;
-        String horarioSalidaStr;
-        LocalTime horarioSalida;
 
         System.out.println("Ingrese el número de vuelo:");
         numeroVuelo = sc.next();
         // valido que no exista
         if (!existeVuelo(vuelos, numeroVuelo)) {
-            System.out.println("Ingrese la identificación del avión:");
-            idAvion = sc.next();
 
-            Avion avion = Lectura.encontrarAvionPorId(aviones, idAvion);
+            Avion avion = solicitarAvion(aviones, sc);
+            if (avion != null) {
 
-            while (avion == null) {
-                System.out.println("No se encontró el avión con ID: " + idAvion);
-                System.out.println("Ingrese la identificación del avión nuevamente");
-                idAvion = sc.next();
-                avion = Lectura.encontrarAvionPorId(aviones, idAvion);
-            }
+                Ruta ruta = solicitarRuta(rutas, sc);
+                if (ruta != null) {
+                    boolean continuar = true;
 
-            System.out.println("Ingrese el ID de la ruta:");
-            idRuta = sc.next();
-            // valido que sea una ruta valida
-            if (existeRuta(rutas, idRuta)) {
-                Ruta ruta = Lectura.encontrarRutaPorId(rutas, idRuta);
-                while (ruta == null) {
-                    System.out.println("No se encontró la ruta con ID: " + idRuta);
-                    System.out.println("Ingrese el ID de la ruta nuevamente");
-                    idRuta = sc.next();
-                    ruta = Lectura.encontrarRutaPorId(rutas, idRuta);
+                    do {
+                        String dia = solicitarDia(sc);
+                        LocalTime horarioSalida = solicitarHorario(sc);
+
+                        int posI = Lectura.obtenerIndiceDia(dia);
+                        int posJ = Lectura.obtenerIndiceHorario(horarioSalida);
+                        // busca que las posiciones sean validas por si el usuario cancela la operacion
+                        if (posI != -1 && posJ != -1) {
+                            if (vuelos[posI][posJ] != null) {
+                                String rta = enviarConfirmacion(sc, "Ya existe un vuelo en ese día y horario.");
+                                continuar = mensajeConfirmacion(rta);
+                            } else {
+                                vuelos[posI][posJ] = new Vuelo(numeroVuelo, avion, ruta, dia, horarioSalida);
+                                System.out.println("Vuelo agregado con éxito.");
+                                continuar = false;
+                            }
+                        } else {
+                            System.out.println("Operación cancelada");
+                            //no continua el bucle porque si la posición es -1 en ambas es porque cancelaron la operacion en el modulo
+                            //ya que si el modulo tira dia u horarioSalida en nulo o invalido es porque el usuario se cansó
+                            continuar = false;
+                        }
+
+                    } while (continuar);
+                } else {
+                    System.out.println("Operación cancelada");
                 }
-                System.out.println("Ingrese el día de la semana:");
-                dia = sc.next();
-
-                System.out.println("Ingrese el horario de salida (hh:mm):");
-                horarioSalidaStr = sc.next();
-                horarioSalida = LocalTime.parse(horarioSalidaStr);
-
-                int posI = Lectura.obtenerIndiceDia(dia);
-                int posJ = Lectura.obtenerIndiceHorario(horarioSalida);
-
-                while (posI == -1 || posJ == -1 || vuelos[posI][posJ] != null) {
-                    System.out.println("Día u horario inválido o ya está ocupado.");
-                    System.out.println("Ingrese el día de la semana nuevamente:");
-                    dia = sc.next();
-                    System.out.println("Ingrese el horario de salida (hh:mm) nuevamente:");
-                    horarioSalidaStr = sc.next();
-                    horarioSalida = LocalTime.parse(horarioSalidaStr);
-                    posI = Lectura.obtenerIndiceDia(dia);
-                    posJ = Lectura.obtenerIndiceHorario(horarioSalida);
-                }
-
-                vuelos[posI][posJ] = new Vuelo(numeroVuelo, avion, ruta, dia, horarioSalida);
-                System.out.println("Vuelo agregado con éxito.");
             } else {
-                System.out.println("La ruta que está buscando no existe.");
+                System.out.println("Operación cancelada");
             }
-
         } else {
             System.out.println("Este vuelo ya existe.");
         }
+    }
 
+    private static boolean mensajeConfirmacion(String rta) {
+        boolean confirmacion;
+        if (rta.equalsIgnoreCase("SI")) {
+            confirmacion = true;
+        } else {
+            confirmacion = false;
+        }
+
+        return confirmacion;
+    }
+
+    private static String enviarConfirmacion(Scanner sc, String mensaje) {
+        System.out.println(mensaje + "\n¿Desea volver a intentarlo?");
+        String rta = sc.next();
+
+        return rta;
     }
 
     // metodo de ordenamiento QUICK SORT para ordenar vuelos por distancia en km de
@@ -516,5 +594,32 @@ public class aerolineas {
         } else {
             System.out.println("La distancia mínima ingresada no es válida");
         }
+    }
+
+    private static int calcularHorariosSinVuelos(Vuelo[][] mat, int i, int j) {
+        int cantSinVuelos;
+        // primer caso base, cuando el largo de la columna sea invalido
+        if (j == mat[0].length) {
+            j = 0;
+            i++;
+        }
+        // paso recursivo: mientras que las filas sean validas
+        if (i < mat.length) {
+            if ((mat[i][j] == null)) {
+                cantSinVuelos = 1 + calcularHorariosSinVuelos(mat, i, j + 1);
+            } else {
+                cantSinVuelos = calcularHorariosSinVuelos(mat, i, j + 1);
+            }
+            // si las filas no son validas, segundo caso base
+        } else {
+            cantSinVuelos = 0;
+        }
+
+        return cantSinVuelos;
+    }
+
+    public static void mostrarHorariosSinVuelos(Vuelo[][] mat) {
+        int cant = calcularHorariosSinVuelos(mat, 0, 0);
+        System.out.println("La cantidad de horarios sin vuelos en la semana es de: " + cant);
     }
 }
