@@ -254,31 +254,4 @@ public class Lectura {
 
     }
 
-    public static void mostrarMatrizVuelos(Vuelo[][] vuelos) {
-        String[] dias = { "Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom" };
-        String[] horarios = {
-                "08:00", "09:00", "10:00", "11:00", "12:00",
-                "13:00", "14:00", "15:00", "16:00", "17:00",
-                "18:00", "19:00", "20:00", "21:00", "22:00"
-        };
-
-        System.out.print(String.format("%-8s", ""));
-        for (String h : horarios) {
-            System.out.print(String.format("%-8s", h));
-        }
-        System.out.println("\n" + "-".repeat(8 + horarios.length * 8));
-
-        for (int i = 0; i < vuelos.length; i++) {
-            System.out.print(String.format("%-8s", dias[i]));
-
-            for (int j = 0; j < vuelos[i].length; j++) {
-                if (vuelos[i][j] != null) {
-                    System.out.print(String.format("%-8s", vuelos[i][j].getNumeroVuelo()));
-                } else {
-                    System.out.print(String.format("%-8s", "----"));
-                }
-            }
-            System.out.println();
-        }
-    }
 }

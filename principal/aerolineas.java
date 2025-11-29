@@ -17,10 +17,6 @@ public class aerolineas {
 
         Scanner sc = new Scanner(System.in);
 
-        // Lectura.mostrarMatrizVuelos(vuelos);
-        agregarVuelo(vuelos, aviones, rutas, sc);
-        Lectura.mostrarMatrizVuelos(vuelos);
-        mostrarHorariosSinVuelos(vuelos);
 
         sc.close();
     }
@@ -633,5 +629,73 @@ public class aerolineas {
     public static void mostrarHorariosSinVuelos(Vuelo[][] mat) {
         int cant = calcularHorariosSinVuelos(mat, 0, 0);
         System.out.println("La cantidad de horarios sin vuelos en la semana es de: " + cant);
+    }
+
+    public static void mostrarMatrizVuelos(Vuelo[][] vuelos) {
+        imprimirEncabezado();
+        imprimirFilas(vuelos);
+    }
+
+    //este modulo imprime los horarios
+    private static void imprimirEncabezado() {
+        String[] horarios = {
+                "08:00", "09:00", "10:00", "11:00", "12:00",
+                "13:00", "14:00", "15:00", "16:00", "17:00",
+                "18:00", "19:00", "20:00", "21:00", "22:00"
+        };
+
+        //dejo un espacio para la columna de los dias
+        System.out.print("     ");
+        //imprimo cada horario con espacios entre sí
+        for (int i = 0; i < horarios.length; i++) {
+            System.out.print(horarios[i]+ "  ");
+        }
+        //dejo una linea de espacios debajo del encabezado
+        System.out.println();
+        
+        // horario.long * 7 es la cuenta que uso para calcular el ancho del numero de vuelo
+        //+5 es el espacio extra para la columna de los dias
+        int longitudLinea = 5 + (horarios.length * 7);
+        //de esta forma se imprime la longitud correcta
+        for (int i = 0; i < longitudLinea; i++) {
+            System.out.print("-");
+        }
+        System.out.println();
+    }
+
+    //este metodo imprime todas las filas de la matriz
+    private static void imprimirFilas(Vuelo[][] vuelos) {
+        String[] dias = { "Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom" };
+
+        for (int i = 0; i < vuelos.length; i++) {
+            //uso print en vez de println para que no haga salto de linea y que imprima el dia y la fila que le correpsonde
+            System.out.print(dias[i] + "  ");
+            imprimirFila(vuelos[i]);
+            //aca si dejo un salto de linea para pasar a la siguiente fila
+            System.out.println();
+        }
+    }
+
+    //este metodo imprime una fila de la matriz
+    private static void imprimirFila(Vuelo[] fila) {
+        String contenido;
+        //si tiene un vuelo, que imprima el numero
+        //si no, que imprima ----
+        for (int j = 0; j < fila.length; j++) {
+            if (fila[j] != null) {
+                contenido = fila[j].getNumeroVuelo();
+            } else {
+                contenido = "----";
+            }
+            
+            System.out.print(contenido);
+
+            //para que cada vuelo tenga 7 espacios, segun el largo
+            //del numero de vuelo o los guiones, calcula cuantos espacios dejar para cada iteracion de j
+            int espacios = 7 - contenido.length();
+            for (int i = 0; i < espacios; i++) {
+                System.out.print(" ");
+            }
+        }
     }
 }
