@@ -295,57 +295,69 @@ public class aerolineas {
 
     public static void agregarVuelo(Vuelo[][] vuelos, Avion[] aviones, Ruta[] rutas, Scanner sc) {
         String numeroVuelo;
+        boolean continuaNumVuelo = true;
 
-        System.out.println("Ingrese el número de vuelo:");
-        numeroVuelo = sc.next();
-        // valido que no exista
-        if (!existeVuelo(vuelos, numeroVuelo)) {
+        do {
+            System.out.println("Ingrese el número de vuelo:");
+            numeroVuelo = sc.next();
+            // valido que no exista
+            if (!existeVuelo(vuelos, numeroVuelo)) {
+                //que frene la primera repetitiva
+                continuaNumVuelo = false;
 
-            Avion avion = solicitarAvion(aviones, sc);
-            if (avion != null) {
+                Avion avion = solicitarAvion(aviones, sc);
+                if (avion != null) {
 
-                Ruta ruta = solicitarRuta(rutas, sc);
-                if (ruta != null) {
-                    boolean continuar = true;
+                    Ruta ruta = solicitarRuta(rutas, sc);
+                    if (ruta != null) {
+                        boolean continuar = true;
 
-                    do {
-                        String dia = solicitarDia(sc);
-                        LocalTime horarioSalida = solicitarHorario(sc);
+                        do {
+                            String dia = solicitarDia(sc);
+                            LocalTime horarioSalida = solicitarHorario(sc);
 
-                        int posI = Lectura.obtenerIndiceDia(dia);
-                        int posJ = Lectura.obtenerIndiceHorario(horarioSalida);
-                        // busca que las posiciones sean validas por si el usuario cancela la operacion
-                        if (posI != -1 && posJ != -1) {
-                            if (vuelos[posI][posJ] != null) {
-                                String rta = enviarConfirmacion(sc, "Ya existe un vuelo en ese día y horario.");
-                                continuar = mensajeConfirmacion(rta);
+                            int posI = Lectura.obtenerIndiceDia(dia);
+                            int posJ = Lectura.obtenerIndiceHorario(horarioSalida);
+                            // busca que las posiciones sean validas por si el usuario cancela la operacion
+                            if (posI != -1 && posJ != -1) {
+                                if (vuelos[posI][posJ] != null) {
+                                    String rta = enviarConfirmacion(sc, "Ya existe un vuelo en ese día y horario.");
+                                    continuar = mensajeConfirmacion(rta);
+                                } else {
+                                    vuelos[posI][posJ] = new Vuelo(numeroVuelo, avion, ruta, dia, horarioSalida);
+                                    System.out.println("Vuelo agregado con éxito.");
+                                    continuar = false;
+                                }
                             } else {
-                                vuelos[posI][posJ] = new Vuelo(numeroVuelo, avion, ruta, dia, horarioSalida);
-                                System.out.println("Vuelo agregado con éxito.");
+                                System.out.println("Operación cancelada");
+                                // no continua el bucle porque si la posición es -1 en ambas es porque
+                                // cancelaron la operacion en el modulo
+                                // ya que si el modulo tira dia u horarioSalida en nulo o invalido es porque el
+                                // usuario se cansó
                                 continuar = false;
                             }
-                        } else {
-                            System.out.println("Operación cancelada");
-                            //no continua el bucle porque si la posición es -1 en ambas es porque cancelaron la operacion en el modulo
-                            //ya que si el modulo tira dia u horarioSalida en nulo o invalido es porque el usuario se cansó
-                            continuar = false;
-                        }
 
-                    } while (continuar);
+                        } while (continuar);
+                    } else {
+                        System.out.println("Operación cancelada");
+                    }
                 } else {
                     System.out.println("Operación cancelada");
                 }
             } else {
-                System.out.println("Operación cancelada");
+                String respuesta = enviarConfirmacion(sc, "Este vuelo ya existe.");
+                continuaNumVuelo = mensajeConfirmacion(respuesta);
+                if (!continuaNumVuelo) {
+                    System.out.println("Operación cancelada");
+                }
             }
-        } else {
-            System.out.println("Este vuelo ya existe.");
-        }
+        } while (continuaNumVuelo);
+
     }
 
     private static boolean mensajeConfirmacion(String rta) {
         boolean confirmacion;
-        if (rta.equalsIgnoreCase("SI")) {
+        if (rta.equalsIgnoreCase("S")) {
             confirmacion = true;
         } else {
             confirmacion = false;
@@ -355,7 +367,7 @@ public class aerolineas {
     }
 
     private static String enviarConfirmacion(Scanner sc, String mensaje) {
-        System.out.println(mensaje + "\n¿Desea volver a intentarlo?");
+        System.out.println(mensaje + "\n¿Desea volver a intentarlo? s/n");
         String rta = sc.next();
 
         return rta;
