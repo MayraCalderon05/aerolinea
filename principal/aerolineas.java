@@ -18,16 +18,17 @@ public class aerolineas {
         sc.close();
     }
 
-    //metodo para mostrar el menu
+
+    // metodo para mostrar el menu
     public static void mostrarMenu(Scanner sc) {
         // iniciamos las variables globales
         Avion[] aviones = Lectura.aviones;
         Ruta[] rutas = Lectura.rutas;
         Vuelo[][] vuelos = Lectura.vuelos;
-        boolean continuar= true;
+        boolean continuar = true;
         int opcion;
         do {
-            System.out.println("Seleccione una opción:\n" +
+            System.out.println("\nSeleccione una opción:\n" +
                     "1. Agregar un nuevo avión\n" +
                     "2. Agregar un nuevo vuelo\n" +
                     "3. Marcar un vuelo como aterrizado\n" +
@@ -38,7 +39,7 @@ public class aerolineas {
                     "8. Ver los vuelos que tengan una ruta comprendida entre un rango de distancias\n" +
                     "9. Ver la cantidad de horarios sin vuelos en la semana\n" +
                     "10. Ver el primer horario de un vuelo internacional de cada dia de la semana");
-            System.out.print("Ingrese su opción:");
+            System.out.print("\nIngrese su opción:\n");
             opcion = sc.nextInt();
             switch (opcion) {
                 case 1:
@@ -53,12 +54,17 @@ public class aerolineas {
                     vueloAterrizado(vuelos, numVuelo);
                     break;
                 case 4:
-                    double promedio = promedioPasajeros(vuelos, 0, 0, 0);
-                    System.out.println("El promedio de pasajeros que efectivamente volaron es de: " + promedio);
+                    double promedio = promedioPasajeros(vuelos);
+                    if (promedio == 0.0) {
+                        System.out.println("No se han registrado vuelos aterrizados aún.");
+                    } else {
+                        System.out.println("El promedio de pasajeros que efectivamente volaron es de: " + promedio);
+
+                    }
                     break;
                 case 5:
                     ordenarXdistancia(vuelos, sc);
-                break;
+                    break;
                 case 6:
                     System.out.println("Ingrese el ID del avión que desea consultar:");
                     String idAvion = sc.next();
@@ -75,14 +81,14 @@ public class aerolineas {
                     mostrarHorariosSinVuelos(vuelos);
                     break;
                 case 10:
-                    LocalTime[] primerosHorarios = primerVueloInternacional(vuelos);
-                    mostrarPrimerosVuelosInternacionales(primerosHorarios);
+                    //LocalTime[] primerosHorarios = primerVueloInternacional(vuelos);
+                    mostrarPrimerosVuelosInternacionales(vuelos);
                     break;
                 default:
                     System.out.println("Opción no válida. Por favor, seleccione una opción del 1 al 10.");
                     break;
             }
-            String respuesta = enviarConfirmacion(sc, "Ya se realizo la operacion solicitada.");
+            String respuesta = confirmacionMenu(sc, "Operación realizada con éxito");
             continuar = mensajeConfirmacion(respuesta);
             if (!continuar) {
                 System.out.println("Operación cancelada");
@@ -124,7 +130,8 @@ public class aerolineas {
         }
 
     }
-    //metodo para guardar el avion en el arreglo
+
+    // metodo para guardar el avion en el arreglo
     public static void guardarAvion(Avion[] array, Avion nuevoAvion) {
         int i = 0;
         boolean noGuardado = true;
@@ -138,6 +145,7 @@ public class aerolineas {
             }
         }
     }
+
     // metodo para verificar si un avion ya existe
     public static boolean existeAvion(Avion[] aviones, String id) {
         boolean encontrado = false;
@@ -147,12 +155,14 @@ public class aerolineas {
 
         return encontrado;
     }
+
     // metodo para validar el id del avion
     public static boolean validarIdAvion(String id) {
         // si no esta bien estructurado no entra en ningun condicional y retorna falso
         boolean valido = false;
 
-        if (id == null) return false;
+        if (id == null)
+            return false;
 
         // ?verifico que tenga el guion en el medio y que no se pase de caracteres y ahi
         // analizo el resto
@@ -209,6 +219,7 @@ public class aerolineas {
         }
         return valido;
     }
+
     // metodo para verificar si una cadena contiene solo numeros
     private static boolean verificarNumeros(String resto) {
         boolean valido = true;
@@ -231,12 +242,15 @@ public class aerolineas {
         return valido;
 
     }
+
     // metodo para verificar si existe el guion en la posicion correcta
     private static boolean existeGuion(String id) {
         // proteger contra cadenas cortas
-        if (id == null || id.length() <= 2) return false;
+        if (id == null || id.length() <= 2)
+            return false;
         return id.charAt(2) == '-';
     }
+
     // metodo para mostrar los datos de un avion por su id
     public static String mostrarDatosAvion(Avion[] array, String id) {
         String info = "";
@@ -254,6 +268,7 @@ public class aerolineas {
 
         return info;
     }
+
     // metodo para verificar si un vuelo ya existe
     private static boolean existeVuelo(Vuelo[][] vuelos, String num) {
         boolean existe = false;
@@ -272,6 +287,7 @@ public class aerolineas {
 
         return existe;
     }
+
     // metodo para solicitar un avion existente
     private static Avion solicitarAvion(Avion[] aviones, Scanner sc) {
         String idAvion;
@@ -293,6 +309,7 @@ public class aerolineas {
 
         return avionEncontrado;
     }
+
     // metodo para solicitar una ruta existente
     private static Ruta solicitarRuta(Ruta[] rutas, Scanner sc) {
         String idRuta;
@@ -315,6 +332,7 @@ public class aerolineas {
         return rutaEncontrada;
 
     }
+
     // metodo para solicitar dia de la semana
     public static String solicitarDia(Scanner sc) {
         boolean continua = true;
@@ -334,6 +352,7 @@ public class aerolineas {
 
         return dia;
     }
+
     // metodo para solicitar horario de salida del vuelo
     public static LocalTime solicitarHorario(Scanner sc) {
         boolean continua = true;
@@ -355,6 +374,7 @@ public class aerolineas {
 
         return horarioSalida;
     }
+
     // metodo para agregar un nuevo vuelo
     public static void agregarVuelo(Vuelo[][] vuelos, Avion[] aviones, Ruta[] rutas, Scanner sc) {
         String numeroVuelo;
@@ -365,7 +385,7 @@ public class aerolineas {
             numeroVuelo = sc.next();
             // valido que no exista
             if (!existeVuelo(vuelos, numeroVuelo)) {
-                //que frene la primera repetitiva
+                // que frene la primera repetitiva
                 continuaNumVuelo = false;
 
                 Avion avion = solicitarAvion(aviones, sc);
@@ -417,7 +437,8 @@ public class aerolineas {
         } while (continuaNumVuelo);
 
     }
-    //metodo para procesar la respuesta de confirmacion de seguir o no en el menu
+
+    // metodo para procesar la respuesta de confirmacion de seguir o no en el menu
     private static boolean mensajeConfirmacion(String rta) {
         boolean confirmacion;
         if (rta.equalsIgnoreCase("S")) {
@@ -428,9 +449,17 @@ public class aerolineas {
 
         return confirmacion;
     }
-    //metodo para enviar un mensaje de confirmacion de si seguir en el menu y obtener la respuesta del usuario
+
+    // metodo para enviar un mensaje de confirmacion de si seguir en el menu y
+    // obtener la respuesta del usuario
     private static String enviarConfirmacion(Scanner sc, String mensaje) {
         System.out.println(mensaje + "\n¿Desea volver a intentarlo? s/n");
+        String rta = sc.next();
+
+        return rta;
+    }
+    private static String confirmacionMenu(Scanner sc, String mensaje) {
+        System.out.println(mensaje + "\n¿Desea volver al menú principal? s/n");
         String rta = sc.next();
 
         return rta;
@@ -439,24 +468,44 @@ public class aerolineas {
     // forma ascendente
     // primero pongo todos los vuelos en un arreglo para que sea mas facil
 
-    //metodo recursivo para calcular el promedio de pasajeros que efectivamente volaron
-    public static double promedioPasajeros(Vuelo[][] vuelos, int cantAviones, int i, int j){
-        double acumPasajeros = 0;
+    // metodo recursivo para calcular el promedio de pasajeros que efectivamente
+    // volaron
+    public static double promedioPasajeros(Vuelo[][] vuelos) {
+        double promedio = 0.0;
+        int[] valores = cantidadAterrizados(vuelos, 0, 0, 0, 0);
+        //para que no realice la división por cero comprueblo que se pueda dividir
+        if (valores[1] > 0) {
+            promedio = (double) (valores[0] / valores[1]);
+        }
+        return promedio;
+    }
+
+    private static int[] cantidadAterrizados(Vuelo[][] vuelos, int cantVuelos, int acumPasajeros, int i, int j) {
+        int[] contador = new int[2]; // contador[0] = cantPasajeros || contador[1] = cantVuelos
+
         if (j >= vuelos[0].length) {
             j = 0;
             i++;
         }
-        if (i < vuelos.length) {
-            if (vuelos[i][j]!= null && vuelos[i][j].getAterrizado()) {
-                acumPasajeros = vuelos[i][j].getAvion().getCantAsientos() + promedioPasajeros(vuelos,cantAviones++, i, j++);
-            }else{
-                acumPasajeros= promedioPasajeros(vuelos,cantAviones, i, j++);
-            }
-        }
-        double promedio = acumPasajeros/cantAviones;
 
-        return promedio;
+        if (i < vuelos.length) {
+            // Si hay un vuelo aterrizado, acumular
+            if (vuelos[i][j] != null && vuelos[i][j].getAterrizado()) {
+                acumPasajeros = acumPasajeros + vuelos[i][j].getAvion().getCantAsientos();
+                cantVuelos++;
+            }
+            //continuar recursivamente, solo acumula si esta aterrizado
+            contador = cantidadAterrizados(vuelos, cantVuelos, acumPasajeros, i, j + 1);
+        } else {
+            //si ya termino de recorrer la matriz
+            //CASO BASE: retornar las variables acumuladas, sin sumar nada mas
+            contador[0] = acumPasajeros;
+            contador[1] = cantVuelos;
+        }
+
+        return contador;
     }
+
     // metodo para filtrar los vuelos por dia y devolver un arreglo con esos vuelos
     private static Vuelo[] filtrarDia(Vuelo[][] mat, String dia) {
         Vuelo[] listaVuelos = new Vuelo[cuentaElementos(mat, dia)];
@@ -470,6 +519,7 @@ public class aerolineas {
         }
         return listaVuelos;
     }
+
     // metodo para definir el tamaño del arreglo
     private static int cuentaElementos(Vuelo[][] mat, String dia) {
         int indiceFila = Lectura.obtenerIndiceDia(dia);
@@ -585,7 +635,8 @@ public class aerolineas {
         }
 
     }
-    //metodo para ordenar los vuelos por distancia en km de forma ascendente
+
+    // metodo para ordenar los vuelos por distancia en km de forma ascendente
     public static void ordenarXdistancia(Vuelo[][] mat, Scanner sc) {
         System.out.println("ingrese el día del que desea obtener información");
         String dia = sc.next();
@@ -603,27 +654,38 @@ public class aerolineas {
             System.out.println("El día ingresado no es válido");
         }
     }
+
     // metodo para registrar un vuelo como aterrizado
     public static void vueloAterrizado(Vuelo[][] vuelos, String numeroVuelo) {
         boolean encontrado = false;
         int i = 0;
         int j = 0;
+        System.out.println("Buscando vuelo: " + numeroVuelo);
         while (i < vuelos.length && !encontrado) {
             j = 0;
             while (j < vuelos[0].length && !encontrado) {
                 if (vuelos[i][j] != null) {
-                    if (vuelos[i][j].getNumeroVuelo().equals(numeroVuelo) && !vuelos[i][j].getAterrizado()) {
+                    if (vuelos[i][j].getNumeroVuelo().equals(numeroVuelo)) {
                         encontrado = true;
-                        vuelos[i][j].setAterrizado(true);
-                        actualizarAvionAterrizado(vuelos[i][j]);
-                        System.out.println("El vuelo " + numeroVuelo + " ha sido marcado como aterrizado");
+                        if (!vuelos[i][j].getAterrizado()) {
+                            vuelos[i][j].setAterrizado(true);
+                            actualizarAvionAterrizado(vuelos[i][j]);
+                            System.out.println("El vuelo " + numeroVuelo + " ha sido marcado como aterrizado");
+                        } else {
+                            System.out.println("El vuelo " + numeroVuelo + " ya estaba marcado como aterrizado");
+                        }
+                        System.out.println(vuelos[i][j].toString());
                     }
                 }
                 j++;
             }
             i++;
         }
+        if (!encontrado) {
+            System.out.println("No se encontró el vuelo: " + numeroVuelo);
+        }
     }
+
     // metodo para actualizar los datos del avion cuando un vuelo aterriza
     public static void actualizarAvionAterrizado(Vuelo vuelo) {
         // actualiza la cantidad de vuelos del avion
@@ -633,6 +695,7 @@ public class aerolineas {
         double nuevosKm = vuelo.getAvion().getKmRecorridos() + vuelo.getRuta().getDistancia();
         vuelo.getAvion().setKmRecorridos(nuevosKm);
     }
+
     // metodo para establecer el espacio del arreglo que busca las rutas
     private static int contarRutas(double distMin, double distMax, Ruta[] rutas) {
         int contador = 0;
@@ -647,6 +710,7 @@ public class aerolineas {
 
         return contador;
     }
+
     // metodo para buscar rutas en un rango de distancia
     public static Ruta[] buscarRutas(double distMin, double distMax, Ruta[] rutas) {
         int tamanio = contarRutas(distMin, distMax, rutas);
@@ -667,6 +731,7 @@ public class aerolineas {
 
         return encontradas;
     }
+
     // metodo para solicitar al usuario el rango de distancia y mostrar las rutas
     public static void encuentraRutas(Ruta[] rutas, Scanner sc) {
         System.out.println("Ingrese la distancia mínima a partir de la que quiere buscar");
@@ -687,6 +752,7 @@ public class aerolineas {
             System.out.println("La distancia mínima ingresada no es válida");
         }
     }
+
     // metodo recursivo para contar los horarios sin vuelos en la semana
     private static int calcularHorariosSinVuelos(Vuelo[][] mat, int i, int j) {
         int cantSinVuelos;
@@ -709,17 +775,20 @@ public class aerolineas {
 
         return cantSinVuelos;
     }
+
     // metodo para mostrar la cantidad de horarios sin vuelos en la semana
     public static void mostrarHorariosSinVuelos(Vuelo[][] mat) {
         int cant = calcularHorariosSinVuelos(mat, 0, 0);
         System.out.println("La cantidad de horarios sin vuelos en la semana es de: " + cant);
     }
+
     // metodo para mostrar la matriz de vuelos
     public static void mostrarMatrizVuelos(Vuelo[][] vuelos) {
         imprimirEncabezado();
         imprimirFilas(vuelos);
     }
-    //metodo para imprimir los horarios de los vuelos
+
+    // metodo para imprimir los horarios de los vuelos
     private static void imprimirEncabezado() {
         String[] horarios = {
                 "08:00", "09:00", "10:00", "11:00", "12:00",
@@ -727,54 +796,58 @@ public class aerolineas {
                 "18:00", "19:00", "20:00", "21:00", "22:00"
         };
 
-        //dejo un espacio para la columna de los dias
+        // dejo un espacio para la columna de los dias
         System.out.print("     ");
-        //imprimo cada horario con espacios entre sí
+        // imprimo cada horario con espacios entre sí
         for (int i = 0; i < horarios.length; i++) {
-            System.out.print(horarios[i]+ "  ");
+            System.out.print(horarios[i] + "  ");
         }
-        //dejo una linea de espacios debajo del encabezado
+        // dejo una linea de espacios debajo del encabezado
         System.out.println();
-        
-        // horario.long * 7 es la cuenta que uso para calcular el ancho del numero de vuelo
-        //+5 es el espacio extra para la columna de los dias
+
+        // horario.long * 7 es la cuenta que uso para calcular el ancho del numero de
+        // vuelo
+        // +5 es el espacio extra para la columna de los dias
         int longitudLinea = 5 + (horarios.length * 7);
-        //de esta forma se imprime la longitud correcta
+        // de esta forma se imprime la longitud correcta
         for (int i = 0; i < longitudLinea; i++) {
             System.out.print("-");
         }
         System.out.println();
     }
 
-    //metodo para imprimir todas las filas de la matriz
+    // metodo para imprimir todas las filas de la matriz
     private static void imprimirFilas(Vuelo[][] vuelos) {
         String[] dias = { "Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom" };
 
         for (int i = 0; i < vuelos.length; i++) {
-            //uso print en vez de println para que no haga salto de linea y que imprima el dia y la fila que le correpsonde
+            // uso print en vez de println para que no haga salto de linea y que imprima el
+            // dia y la fila que le correpsonde
             System.out.print(dias[i] + "  ");
             imprimirFila(vuelos[i]);
-            //aca si dejo un salto de linea para pasar a la siguiente fila
+            // aca si dejo un salto de linea para pasar a la siguiente fila
             System.out.println();
         }
     }
-    //metodo para imprimir una fila de la matriz
+
+    // metodo para imprimir una fila de la matriz
     private static void imprimirFila(Vuelo[] fila) {
 
         String contenido;
-        //si tiene un vuelo, que imprima el numero
-        //si no, que imprima ----
+        // si tiene un vuelo, que imprima el numero
+        // si no, que imprima ----
         for (int j = 0; j < fila.length; j++) {
             if (fila[j] != null) {
                 contenido = fila[j].getNumeroVuelo();
             } else {
                 contenido = "----";
             }
-            
+
             System.out.print(contenido);
 
-            //para que cada vuelo tenga 7 espacios, segun el largo
-            //del numero de vuelo o los guiones, calcula cuantos espacios dejar para cada iteracion de j
+            // para que cada vuelo tenga 7 espacios, segun el largo
+            // del numero de vuelo o los guiones, calcula cuantos espacios dejar para cada
+            // iteracion de j
             int espacios = 7 - contenido.length();
             for (int i = 0; i < espacios; i++) {
                 System.out.print(" ");
@@ -782,8 +855,8 @@ public class aerolineas {
         }
     }
 
-    // metodo para calcular el primer horario de un vuelo internacional de cada dia 
-    public static LocalTime[] primerVueloInternacional(Vuelo[][] vuelos){
+    // metodo para calcular el primer horario de un vuelo internacional de cada dia
+    public static LocalTime[] primerVueloInternacional(Vuelo[][] vuelos) {
         LocalTime[] primerosHorarios = new LocalTime[7];
         boolean encontrado = false;
         int i = 0;
@@ -796,10 +869,10 @@ public class aerolineas {
                     primerosHorarios[i] = vuelos[i][j].getHorarioSalida();
                     encontrado = true;
                     i++;
-                }else{
+                } else {
                     j++;
                 }
-            }  
+            }
             if (!encontrado) {
                 primerosHorarios[i] = null;
                 i++;
@@ -807,17 +880,19 @@ public class aerolineas {
         }
         return primerosHorarios;
     }
-    //metodo para mostrar los primeros vuelos internacionales de cada dia
-    public static void mostrarPrimerosVuelosInternacionales(LocalTime[] primerosHorarios){
+
+    // metodo para mostrar los primeros vuelos internacionales de cada dia
+    public static void mostrarPrimerosVuelosInternacionales(Vuelo[][] vuelos) {
         String[] dias = { "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" };
+        LocalTime[] primerosHorarios = primerVueloInternacional(vuelos);
 
         for (int i = 0; i < primerosHorarios.length; i++) {
             if (primerosHorarios[i] != null) {
-                System.out.println("El primer vuelo internacional del día " + dias[i] + " es a las " + primerosHorarios[i]);
+                System.out.println(
+                        "El primer vuelo internacional del día " + dias[i] + " es a las " + primerosHorarios[i]);
             } else {
                 System.out.println("No hay vuelos internacionales programados para el día " + dias[i]);
             }
         }
     }
 }
-
