@@ -15,12 +15,21 @@ public class Avion {
         this.cantAsientos = 0;
         this.kmRecorridos = 0.00;
     }
+    //en caso de cargar un avion ya existente como en el caso del txt
     public Avion(String identificacion, String modelo, int cantVuelos, int cantAsientos, double kmRecorridos) {
         this.identificacion = identificacion;
         this.modelo = modelo;
         this.cantVuelos = cantVuelos;
         this.cantAsientos = cantAsientos;
         this.kmRecorridos = kmRecorridos;
+    }
+    //nuevo avion sin vuelos ni km recorridos
+    public Avion(String identificacion, String modelo,  int cantAsientos) {
+        this.identificacion = identificacion;
+        this.modelo = modelo;
+        this.cantVuelos = 0;
+        this.cantAsientos = cantAsientos;
+        this.kmRecorridos = 0.00;
     }
     //metodos
     //Getters y Setters
