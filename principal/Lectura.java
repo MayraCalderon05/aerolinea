@@ -29,7 +29,7 @@ public class Lectura {
 
     public static Avion[] cargarAvion() {
         // ruta hacia el archivo txt
-        String avionesEntrada ="C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Aviones.txt";
+        String avionesEntrada ="C:\\Users\\MORENA\\Desktop\\DA\\aerolinea\\recursos\\Aviones.txt";;
         // creo un arreglo con 2 espacios mas en caso de guardar mas aviones
         Avion[] aviones = new Avion[22];
         String linea = null;
