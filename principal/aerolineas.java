@@ -88,7 +88,7 @@ public class aerolineas {
                     System.out.println("Opción no válida. Por favor, seleccione una opción del 1 al 10.");
                     break;
             }
-            String respuesta = confirmacionMenu(sc, "Operación realizada con éxito");
+            String respuesta = enviarConfirmacion(sc, "Operación realizada con éxito. Desea realizar otra operación?");
             continuar = mensajeConfirmacion(respuesta);
             if (!continuar) {
                 System.out.println("Operación cancelada");
@@ -102,33 +102,47 @@ public class aerolineas {
         String identificacion;
         String modelo;
         int cantAsientos;
+        boolean continuar = true;
 
-        System.out.println("Ingrese la identificacion del avion:");
-        identificacion = sc.next();
-        if (validarIdAvion(identificacion)) {
-            if (existeAvion(aviones, identificacion)) {
-                System.out.println("El avion ingresado ya existe en la base de datos");
-            } else {
-                System.out.println("Ingrese el modelo del avion:");
-                modelo = sc.next();
-
-                System.out.println("Ingrese la cantidad de asientos que tiene el avión");
-                cantAsientos = sc.nextInt();
-                // valores imposibles
-                if (cantAsientos < 0 || cantAsientos > 300) {
-                    System.out.println("La cantidad de asientos es inválida");
+        do{
+            System.out.println("Ingrese la identificacion del avion:");
+            identificacion = sc.next();
+            if (validarIdAvion(identificacion) && !existeAvion(aviones, identificacion)) {
+                    System.out.println("Ingrese el modelo del avion:");
+                    modelo = sc.next();
+                    do{
+                        System.out.println("Ingrese la cantidad de asientos que tiene el avión");
+                        cantAsientos = sc.nextInt();
+                        // valores imposibles
+                        if (cantAsientos > 0 && cantAsientos < 300) {
+                            Avion nuevoAvion = new Avion(identificacion, modelo, cantAsientos);
+                            System.out.println("Avion registrado con éxito");
+                            guardarAvion(aviones, nuevoAvion);
+                            System.out.println("Avion guardado con éxito");
+                            continuar = false;
+                        } else {
+                            System.out.println("La cantidad de asientos es inválida");
+                            String respuesta = enviarConfirmacion(sc, "Desea volver a intentarlo?");
+                            continuar = mensajeConfirmacion(respuesta);
+                            if (!continuar) {
+                                System.out.println("Operación cancelada");
+                            }
+                        }
+                    }while(continuar);     
+            }else{
+                if (!validarIdAvion(identificacion)) {
+                    System.out.println("El identificador del avión no es válido");
                 } else {
-                    Avion nuevoAvion = new Avion(identificacion, modelo, cantAsientos);
-                    System.out.println("Avion registrado con éxito");
-                    guardarAvion(aviones, nuevoAvion);
-                    System.out.println("Avion guardado con éxito");
+                    System.out.println("El avión con ID: " + identificacion + " ya existe.");    
                 }
-
+                String respuesta = enviarConfirmacion(sc, "Desea volver a intentarlo?");
+                continuar = mensajeConfirmacion(respuesta);
+                if (!continuar) {
+                    System.out.println("Operación cancelada");
+                }
             }
-        } else {
-            System.out.println("El identificador del avión no es válido");
-        }
-
+        }while(continuar);
+            
     }
 
     // metodo para guardar el avion en el arreglo
@@ -301,7 +315,7 @@ public class aerolineas {
             avionEncontrado = Lectura.encontrarAvionPorId(aviones, idAvion);
 
             if (avionEncontrado == null) {
-                String respuesta = enviarConfirmacion(sc, "No se encontró el avión con ID: " + idAvion);
+                String respuesta = enviarConfirmacion(sc, "No se encontró el avión con ID: " + idAvion + ". Desea volver a intentarlo?");
                 continuar = mensajeConfirmacion(respuesta);
             }
 
@@ -323,7 +337,7 @@ public class aerolineas {
             rutaEncontrada = Lectura.encontrarRutaPorId(rutas, idRuta);
 
             if (rutaEncontrada == null) {
-                String respuesta = enviarConfirmacion(sc, "No se encontró la ruta con ID: " + idRuta);
+                String respuesta = enviarConfirmacion(sc, "No se encontró la ruta con ID: " + idRuta + ". Desea volver a intentarlo?");
                 continuar = mensajeConfirmacion(respuesta);
             }
 
@@ -345,7 +359,7 @@ public class aerolineas {
             posI = Lectura.obtenerIndiceDia(dia);
 
             if (posI == -1) {
-                String rta = enviarConfirmacion(sc, "El día ingresado no es válido.");
+                String rta = enviarConfirmacion(sc, "El día ingresado no es válido. Desea volver a intentarlo?");
                 continua = mensajeConfirmacion(rta);
             }
         } while (continua && posI == -1);
@@ -367,7 +381,7 @@ public class aerolineas {
             posJ = Lectura.obtenerIndiceHorario(horarioSalida);
 
             if (posJ == -1) {
-                String rta = enviarConfirmacion(sc, "El horario ingresado no es válido.");
+                String rta = enviarConfirmacion(sc, "El horario ingresado no es válido. Desea volver a intentarlo?");
                 continua = mensajeConfirmacion(rta);
             }
         } while (continua && posJ == -1);
@@ -404,7 +418,7 @@ public class aerolineas {
                             // busca que las posiciones sean validas por si el usuario cancela la operacion
                             if (posI != -1 && posJ != -1) {
                                 if (vuelos[posI][posJ] != null) {
-                                    String rta = enviarConfirmacion(sc, "Ya existe un vuelo en ese día y horario.");
+                                    String rta = enviarConfirmacion(sc, "Ya existe un vuelo en ese día y horario. desea volver a intentarlo?");
                                     continuar = mensajeConfirmacion(rta);
                                 } else {
                                     vuelos[posI][posJ] = new Vuelo(numeroVuelo, avion, ruta, dia, horarioSalida);
@@ -428,7 +442,7 @@ public class aerolineas {
                     System.out.println("Operación cancelada");
                 }
             } else {
-                String respuesta = enviarConfirmacion(sc, "Este vuelo ya existe.");
+                String respuesta = enviarConfirmacion(sc, "Este vuelo ya existe. desea volver a intentar?");
                 continuaNumVuelo = mensajeConfirmacion(respuesta);
                 if (!continuaNumVuelo) {
                     System.out.println("Operación cancelada");
@@ -453,13 +467,7 @@ public class aerolineas {
     // metodo para enviar un mensaje de confirmacion de si seguir en el menu y
     // obtener la respuesta del usuario
     private static String enviarConfirmacion(Scanner sc, String mensaje) {
-        System.out.println(mensaje + "\n¿Desea volver a intentarlo? s/n");
-        String rta = sc.next();
-
-        return rta;
-    }
-    private static String confirmacionMenu(Scanner sc, String mensaje) {
-        System.out.println(mensaje + "\n¿Desea volver al menú principal? s/n");
+        System.out.println(mensaje + "s/n");
         String rta = sc.next();
 
         return rta;
@@ -660,7 +668,6 @@ public class aerolineas {
         boolean encontrado = false;
         int i = 0;
         int j = 0;
-        System.out.println("Buscando vuelo: " + numeroVuelo);
         while (i < vuelos.length && !encontrado) {
             j = 0;
             while (j < vuelos[0].length && !encontrado) {
@@ -674,7 +681,6 @@ public class aerolineas {
                         } else {
                             System.out.println("El vuelo " + numeroVuelo + " ya estaba marcado como aterrizado");
                         }
-                        System.out.println(vuelos[i][j].toString());
                     }
                 }
                 j++;
